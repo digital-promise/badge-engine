@@ -22,7 +22,7 @@ Your organization is solely responsible for creating and implementing its own Te
 This open-source software is provided under the [Apache 2.0 license].  By using this software, you agree to comply with the terms of that license.  We make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability or availability with respect to the software or the information, products, services, or related graphics contained on the software for any purpose. Any reliance you place on such information is therefore strictly at your own risk.
 
 ## Acknowledgements
-Organizations and board acknowledgment goes here
+*Organizations and board acknowledgment goes here*
 
 ## License 
 Apache 2.0 (c) 2024 Digital Promise Global
