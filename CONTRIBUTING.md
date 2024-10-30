@@ -4,7 +4,7 @@ Text here
 
 ### Developer's Certificate of Origin
 
-By making a contribution to this project, I certify that:
+```By making a contribution to this project, I certify that:
 
 (a) The contribution was created in whole or in part by me and I
     have the right to submit it under the open source license
@@ -26,4 +26,4 @@ By making a contribution to this project, I certify that:
     are public and that a record of the contribution (including all
     personal information I submit with it, including my sign-off) is
     maintained indefinitely and may be redistributed consistent with
-    this project or the open source license(s) involved.
+    this project or the open source license(s) involved.```
