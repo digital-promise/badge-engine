@@ -1,4 +1,7 @@
-# Badge Engine
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8466e9c6-f6c2-4c66-af3b-ba5596807b98" />
+</p>
+
 ### Shaping the Future of Learning with Open-Source Digital Credentials
 Digital Promise is committed to advancing equitable education by uniting research, practice, and technology into scalable solutions. Badge Engine is an open-source badging technology designed to empower learners and organizations alike.
 ### What is Badge Engine?
