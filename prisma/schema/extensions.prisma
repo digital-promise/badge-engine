@@ -1,0 +1,27 @@
+// TODO: host JSON-LD and context on server
+// https://www.imsglobal.org/spec/ob/v3p0#extending
+
+model Extensions {
+    id            String      @id @default(auto()) @map("_id") @db.ObjectId
+    achievementId String      @unique @db.ObjectId
+    achievement   Achievement @relation("AchievementToExtensions", fields: [achievementId], references: [docId])
+
+    // Relation to AssessmentExtension; multiple extensions per achievement
+    assessmentExtensions AssessmentExtension[] @relation(name: "ExtensionsToAssessmentExtensions")
+}
+
+model AssessmentExtension {
+    id                             String             @id @default(auto()) @map("_id") @db.ObjectId
+    // '@context' = 	The value of the @context property MUST be an ordered set where the first item is a URI with the value 'https://www.w3.org/ns/credentials/v2', and the second item is a URI with the value 'https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json'. [1..*]
+    context                        String[]
+    type                           String[] // Extension, AssessmentExtension
+    supportingResearchAndRationale String?
+    resources                      String?
+    credentialSchema               CredentialSchema[]
+
+    // Model Relationships
+    achievementId String      @db.ObjectId
+    achievement   Achievement @relation("AchievementToAssessmentExtensions", fields: [achievementId], references: [docId])
+    extensionsId  String      @db.ObjectId
+    extensions    Extensions  @relation("ExtensionsToAssessmentExtensions", fields: [extensionsId], references: [id])
+}

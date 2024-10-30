@@ -1,0 +1,130 @@
+// https://www.imsglobal.org/spec/ob/v3p0#org.1edtech.ob.v3p0.profile.class
+// Issuers must be represented as Profiles, and endorsers, or other entities may also be represented using this vocabulary. 
+// Each Profile that represents an Issuer may be referenced in many BadgeClasses that it has defined. Anyone can create and host an Issuer file to start issuing Open Badges. Issuers may also serve as recipients of Open Badges, often identified within an Assertion by specific properties, like their url or contact email address.
+model Profile {
+    docId                   String                  @id @default(auto()) @map("_id") @db.ObjectId
+    // 'createdAt' = extends Profile for internal use.
+    createdAt            DateTime                @default(now())
+    // 'updatedAt' = extends Profile for internal use.
+    updatedAt            DateTime                @updatedAt
+    // `role` = extends Profile for internal use.  Defines role-based access
+    role                 String? // super-admin
+    // `lastLogin` = extends Profile for internal use. 
+    lastLogin            DateTime?               @default(now())
+    // `isActive` = extends Profile for internal use.
+    isActive             Boolean                 @default(true)
+    // 'isPublic' = internal use only for display behavior on MCP platform.  This does not need to be an extension of the Achievement model and should be programatically removed when the credential is awarded to align with OBV3 standards.
+    isPublic             Boolean                 @default(false)
+    // `hasAgreedTerms` = extends Profile for internal use.
+    hasAgreedTerms       Boolean?
+    // `agreedTermsVersion` = extends Profile for internal use.  Allows us to know ehich version of the terms the Issuer agreed to so they can prompted when terms have been updated.
+    agreedTermsVersion   String?
+    // Unique URI for the Issuer/Profile file. [1]
+    id                  String                  @unique
+    // 	The value of the 'type' property MUST be an unordered set. One of the items MUST be the IRI 'Profile'. [1..*]
+    type                 String[]
+    // 'name' = The name of the entity or organization. [0..1]
+    name                 String?
+    //  'url' = 	The homepage or social media profile of the entity, whether individual or institutional. Should be a URL/URI Accessible via HTTP.
+    url                  String?
+    // 'phone' = A NormalizedString representing a phone number. [0..1]
+    phone                String?
+    // 'description' = A short description of the issuer entity or organization. [0..1]
+    description          String?
+    // 'endorsement' = 	Allows endorsers to make specific claims about the individual or organization represented by this profile. These endorsements are signed with a Data Integrity proof format. [0..*]
+    endorsement          EndorsementCredential[]
+    // 'endorsementJwt' = Allows endorsers to make specific claims about the individual or organization represented by this profile. These endorsements are signed with the VC-JWT proof format. [0..*]
+    // 'endorsementJwt' = A String in Compact JWS format.
+    endorsementJwt       String[] // optional
+    // 'image' = An image representing the issuer. This must be a PNG or SVG image. [0..1]
+    image                Image?                  @relation(fields: [imageId], references: [docId])
+    imageId              String?                 @db.ObjectId
+    // 'email' = A NormalizedString representing an email address. [0..1]
+    email                String?
+    // 'emailVerified' = extends Profile for internal use.
+    emailVerified        Boolean?
+    // 'revieveNotifications' = extends Profile for internal use
+    receiveNotifications Boolean?
+    // 'address' = 	An address for the individual or organization. [0..1]
+    address              Address?                @relation(fields: [addressId], references: [id])
+    addressId            String?                 @db.ObjectId
+    // 'otherIdentifier' = A list of identifiers for the described entity. [0..*]
+    otherIdentifier      IdentifierEntry[] // optional
+    // 'official' = If the entity is an organization, official is the name of an authorized official of the organization. [0..1]
+    official             String?
+    // 'parentOrg' = The parent organization of the entity. [0..1]
+    parentOrg            Profile?                @relation("ParentOrg", fields: [parentOrgID], references: [docId], onDelete: NoAction, onUpdate: NoAction)
+    parentOrgID          String?                 @db.ObjectId
+    childOrgs            Profile[]               @relation("ParentOrg")
+    // 'familyName' = Family name. In the western world, often referred to as the 'last name' of a person. [0..1]
+    familyName           String?
+    // 'givenName' = Given name. In the western world, often referred to as the 'first name' of a person. [0..1]
+    givenName            String?
+    // 'additionalName' = Additional name. Includes what is often referred to as 'middle name' in the western world. [0..1]
+    additionalName       String?
+    // 'patronymicName' = Patronymic name. [0..1]
+    patronymicName       String?
+    // 'honorificPrefix' = Honorific prefix(es) preceding a person's name (e.g. 'Dr', 'Mrs' or 'Mr'). [0..1]
+    honorificPrefix      String?
+    // 'honorificSuffix' = Honorific suffix(es) following a person's name (e.g. 'M.D, PhD'). [0..1]
+    honorificSuffix      String?
+    // 'familyNamePrefix' = Family name prefix. As used in some locales, this is the leading part of a family name (e.g. 'de' in the name 'de Boer'). [0..1]
+    familyNamePrefix     String?
+    // 'dateOfBirth' = Birthdate of the person. [0..1]
+    dateOfBirth          DateTime?
+
+    // Model relationships
+    Achievement           Achievement[]
+    AchievementSubject    AchievementSubject[]
+    AchievementCredential AchievementCredential[]
+    VerifiableCredential  VerifiableCredential[]
+    EndorsementCredential EndorsementCredential[] @relation(name: "EndorsementCredentialIssuerProfile")
+}
+
+// https://www.imsglobal.org/spec/ob/v3p0#org.1edtech.ob.v3p0.address.class
+// An address for the described entity.
+model Address {
+    id                  String          @id @default(auto()) @map("_id") @db.ObjectId
+    // 	'type' = The value of the type property MUST be an unordered set. One of the items MUST be the IRI 'Address'. [1..*]
+    // IRI = A NormalizedString that represents an Internationalized Resource Identifier (IRI), which extends the ASCII characters subset of the Uniform Resource Identifier (URI).
+    type                String[]
+    // 'addressCountry' = A country. [0..1]
+    addressCountry      String?
+    // 'addressCountryCode' = A country code. The value must be a ISO 3166-1 alpha-2 country code. [0..1]
+    addressCountryCode  String?
+    // 'addressRegion' = A region within the country. [0..1]
+    addressRegion       String?
+    // 'addressLocality' = 	A locality within the region. [0..1]
+    addressLocality     String?
+    // 'streetAddress' = A street address within the locality. [0..1]
+    streetAddress       String?
+    // 'postOfficeBoxNumber' = A post office box number for PO box addresses. [0..1]
+    postOfficeBoxNumber String?
+    // 'postalCode' = A postal code. [0..1]
+    postalCode          String?
+    // 'geo' = The geographic coordinates of the location. [0..1]
+    geo                 GeoCoordinates? @relation(fields: [geoId], references: [id])
+    geoId               String?         @db.ObjectId
+
+    // Model relationships
+    Profile Profile[]
+
+    // *NOTE: This class can be extended with additional properties.
+}
+
+// https://www.imsglobal.org/spec/ob/v3p0#org.1edtech.ob.v3p0.geocoordinates.class
+// The geographic coordinates of a location.
+model GeoCoordinates {
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    // 'type' = The value of the type property MUST be an unordered set. One of the items MUST be the IRI 'GeoCoordinates'. [1]
+    type      String @default("GeoCoordinates")
+    // 'latitude' = The latitude of the location. [1]
+    latitude  Float
+    // 'longitude' = The latitude of the location. [1]
+    longitude Float
+
+    // Model relationships
+    Address Address[]
+
+    // *NOTE: This class can be extended with additional properties.
+}

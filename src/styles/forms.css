@@ -1,0 +1,91 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .required {
+        &::after {
+            content: "*";
+            @apply ml-1 text-red-4;
+        }
+    }
+}
+
+@layer components {
+    .dashboard-form {
+        @apply container flex flex-col gap-7 max-w-[45rem];
+
+        .field, .checkbox {
+            &[aria-required],
+            &:has([required]) {
+                label:not([class]), .base-form-label {
+                    @apply required;
+                }
+            }
+        }
+    
+        .field {
+            @apply flex flex-col gap-3;
+
+            &:focus-within {
+                input, textarea {
+                    @apply outline-2 outline-blue-4 rounded-[4px]; 
+                }
+
+                label:not([class]), .base-form-label {
+                    @apply text-blue-5;
+                }
+            }
+            label:not([class]), .base-form-label {
+                @apply text-base font-medium;
+            }
+    
+            input, textarea {
+                @apply transition px-4 py-3 outline outline-1 outline-gray-5 rounded-[4px];
+
+                &:focus {
+                    @apply outline-2 outline-blue-4 rounded-[4px];
+                }
+            }
+
+            .error {
+                @apply border-2 border-red-4 outline-none focus:outline-0 rounded-[4px]; 
+            }
+
+            .error-dropdown {
+                @apply border-2 border-red-4 focus:outline-none rounded-md;
+            }
+
+            .error-label {
+                @apply text-red-4 required text-base font-medium
+            }
+        }
+
+        .checkbox {
+            @apply flex gap-3 items-center;
+
+            input[type="checkbox"] {
+                @apply transition-colors appearance-none cursor-pointer bg-neutral-1 border-2 border-gray-5 rounded-[0.25rem] w-[24px] h-[24px] grid place-content-center hover:bg-gray-1 hover:border-neutral-5 before:hidden before:content-['\2713'] before:text-neutral-1 before:font-bold checked:bg-blue-3 checked:border-blue-4 checked:hover:bg-blue-4 checked:hover:border-blue-5 checked:before:inline-block;
+            }
+        }
+
+        .heading {
+            @apply text-lg font-medium mb-[-1rem];
+        }
+
+        button[type="submit"] {
+            @apply bg-primary text-neutral-1 self-start px-5 py-3 rounded-3xl;
+
+            &[disabled] {
+                @apply bg-gray-3 border-gray-4;
+            }
+        }
+
+        button.secondary {
+            @apply text-blue-3 rounded-3xl px-5 py-3
+        }
+
+        .btn-secondary {
+            @apply text-blue-3 rounded-3xl px-5 py-3 border-2
+        }
+    }
+}

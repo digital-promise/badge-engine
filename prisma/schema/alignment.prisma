@@ -1,0 +1,54 @@
+// https://www.imsglobal.org/spec/ob/v3p0#alignment
+// Describes an alignment between an achievement and a node in an educational framework.
+// This class can be extended with additional properties.
+model Alignment {
+    id                String               @id @default(auto()) @map("_id") @db.ObjectId
+    // 	The value of the 'type' property MUST be an unordered set. One of the items MUST be the IRI 'Alignment'. [1..*]
+    type              String[]
+    // 'targetCode' = locally unique string identifier that identifies the alignment target within its framework and/or targetUrl. [0..1]
+    targetCode        String?
+    // Short description of the alignment target.[0..1]
+    targetDescription String?
+    // Name of the alignment. [1]
+    targetName        String
+    // Name of the framework the alignment target. [0..1]
+    targetFramework   String?
+    // The type of the alignment target node. [0..1]
+    targetType        AlignmentTargetType? // optional
+    // URL linking to the official description of the alignment target, for example an individual standard within an educational framework. [1]
+    targetUrl         String
+
+    // *NOTE: This class can be extended with additional properties.
+
+    // Model relationships
+    achievements           Achievement[]         @relation(fields: [achievementIds], references: [docId])
+    achievementIds         String[]              @db.ObjectId
+    Result                 Result?               @relation(fields: [resultId], references: [id], name: "result", onDelete: NoAction, onUpdate: NoAction)
+    resultId               String?               @db.ObjectId
+    ResultDescription      ResultDescription?    @relation(fields: [resultDescriptionId], references: [docId], name: "resultDescription", onDelete: NoAction, onUpdate: NoAction)
+    resultDescriptionId    String?               @db.ObjectId
+    RubricCriterionLevel   RubricCriterionLevel? @relation(fields: [rubricCriterionlevelId], references: [docId], name: "rubricCriterionLevel", onDelete: NoAction, onUpdate: NoAction)
+    rubricCriterionlevelId String?               @db.ObjectId
+}
+
+// https://www.imsglobal.org/spec/ob/v3p0#org.1edtech.ob.v3p0.alignmenttargettype.class
+// The type of the alignment target node in the target framework.
+// This enumeration can be extended with new, proprietary terms. The new terms must start with the substring 'ext:'.
+enum AlignmentTargetType {
+    // 'ceasn:Competency' = An alignment to a CTDL-ASN/CTDL competency published by Credential Engine.
+    ceasnCompentency       @map("ceasn:Competency")
+    // 'ceterms:Credential' = An alignment to a CTDL Credential published by Credential Engine.
+    cetermsCredential      @map("ceterms:Credential")
+    // 'CFItem' = An alignment to a CASE Framework Item.
+    CFItem
+    // 'CFRubric' = An alignment to a CASE Framework Rubric.
+    CFRubric
+    // 'CFRubricCriterion' = An alignment to a CASE Framework Rubric Criterion.
+    CFRubricCriterion
+    // 'CFRubricCriterionLevel' = An alignment to a CASE Framework Rubric Criterion Level.
+    CFRubricCriterionLevel
+    // 'CTDL' = An alignment to a Credential Engine Item.
+    CTDL
+
+    // *NOTE: This enumeration can be extended with new, proprietary terms. The new terms must start with the substring 'ext:'.
+}

@@ -1,0 +1,64 @@
+// Necessary for Next auth
+model Account {
+    id                String  @id @default(auto()) @map("_id") @db.ObjectId
+    userId            String  @db.ObjectId
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String? @db.String
+    access_token      String? @db.String
+    id_token          String? @db.String
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    session_state     String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+}
+
+model Session {
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    sessionToken String   @unique
+    userId       String   @db.ObjectId
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model User {
+    id            String    @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    lastLogin     DateTime  @default(now())
+    isActive      Boolean   @default(true)
+    isSuperUser   Boolean   @default(false)
+    // `role` = Defines role-based access.  Allows for issuer access and levelled admin access with specific permissions.  At that time this will convert to `String[]` and enum values will be defined, as well as possibly removing `isSuperUser` field.
+    role          String?
+    name          String?
+    email         String    @unique
+    emailVerified Boolean?
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+}
+
+model VerificationToken {
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
+// Internal use for role-based access permissions
+enum RolePermissions {
+    ASSUMEROLESECRETMANAGERREAD
+}

@@ -1,0 +1,60 @@
+name: badgeengine
+
+excludes:
+  - .next
+  - .pnpm-store
+
+services:
+  appserver:
+    api: 3
+    type: node
+    overrides:
+      image: node:20
+      environment:
+        COREPACK_ENABLE_DOWNLOAD_PROMPT: 0
+    build_as_root:
+      - corepack enable
+      - corepack prepare pnpm --activate
+    build:
+      - pnpm install
+      - pnpm style-dictionary
+    port: 3000
+    ssl: 4444
+    command: pnpm dev
+
+  mongodb:
+    portforward: true
+    type: mongo:7.0
+    overrides:
+      command: docker-entrypoint.sh --replSet rs0
+
+  status:
+    api: 3
+    type: lando
+    scanner: false
+    app_mount: false
+    services:
+      image: digitalcredentials/status-service:0.1.0
+      working_dir: /app
+      command: node server.js
+    ssl: false
+    sslExpose: false
+    port: 4008
+
+proxy:
+  appserver:
+    - badgeengine.lndo.site:3000
+    - prisma.badgeengine.lndo.site:3100
+  status:
+    - status.badgeengine.lndo.site:4008
+
+tooling:
+  pnpm:
+    service: appserver
+
+events:
+  post-start:
+    - appserver: pm2 start "local-ssl-proxy --source 4444 --target 3000 --key /certs/cert.key --cert /certs/cert.crt" -s
+
+    - mongodb: |
+        mongosh --quiet --norc --eval "db.isMaster().primary || rs.initiate({_id: 'rs0', members: [{_id: 0, host: '127.0.0.1:27017'}]});"

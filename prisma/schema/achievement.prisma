@@ -1,0 +1,128 @@
+// https://www.imsglobal.org/spec/ob/v3p0#achievement
+// A collection of information about the accomplishment recognized by the Assertion. Many assertions may be created corresponding to one Achievement.
+model Achievement {
+    docId                    String                  @id @default(auto()) @map("_id") @db.ObjectId
+    // Unique URI for the Achievement. [1] Required but marked optional as it gets added after creation.
+    id                   String                  @unique
+    // 'type' property is an IRI
+    // A NormalizedString that represents an Internationalized Resource Identifier (IRI), which extends the ASCII characters subset of the Uniform Resource Identifier (URI). [1..*]
+    // "type": ["Achievement", "ResearchAndRationale", "Resources"]
+    type                  String[]
+    // 'alignment' = An object describing which objectives or educational standards this achievement aligns to, if any. [0..1]
+    alignment             Alignment[]             @relation(fields: [alignmentIds], references: [id])
+    alignmentIds          String[]                @db.ObjectId
+    // 'achievementType' = The type of achievement. This is an extensible vocabulary. [0..1]
+    achievementType       AchievementType?
+    // 'creator' = The person or organization that created the achievement definition. [0..1]
+    createdAt             DateTime                @default(now())
+    creator               Profile?                @relation(fields: [creatorId], references: [docId])
+    creatorId             String?                 @db.ObjectId
+    // 'creditsAvailable' = Credit hours associated with this entity, or credit hours possible. For example 3.0. [0..1]
+    creditsAvailable      Float?
+    // 'criteria' = Criteria describing how to earn the achievement. [1]
+    // Early Access Release: Optional. TODO: Handle inline criteria creation in Achievement form, server actions
+    criteria              CriteriaType
+    // 'description' = A short description of the achievement. [1]
+    description           String
+    // 'endorsement' = Allows endorsers to make specific claims about the Achievement. These endorsements are signed with a Data Integrity proof format. [0..*]
+    endorsement           EndorsementCredential[] @relation("achievement") // optional
+    // 'endorsementJwt' = Allows endorsers to make specific claims about the Achievement. These endorsements are signed with the VC-JWT proof format. [0..*]
+    endorsementJwt        String[] // optional
+    extensions            Extensions[]            @relation("AchievementToExtensions") // optional
+    // 'fieldOfStudy' = Category, subject, area of study, discipline, or general branch of knowledge. Examples include Business, Education, Psychology, and Technology. [0..1]
+    fieldOfStudy          String?
+    // 'humanCode' = The code, generally human readable, associated with an achievement. [0..1]
+    humanCode             String?
+    // 'image' = An image representing the achievement. [0..1]
+    image                 Image?                  @relation(fields: [imageId], references: [docId])
+    imageId               String?                 @db.ObjectId
+    // 'inLanguage' = The language of the achievement. [0..1]
+    inLanguage            String? // could be enum
+    // 'name' = The name of the achievement. [1]
+    name                  String
+    // 'otherIdentifier' = A list of identifiers for the described entity. [0..*]
+    otherIdentifier       IdentifierEntry[]       @relation("achievement") // optional
+    // 'related' = The related property identifies another Achievement that should be considered the same for most purposes. It is primarily intended to identify alternate language editions or previous versions of Achievements.	[0..*]
+    related               Related[]               @relation("achievement") //optional
+    // 'resultDescription' = The set of result descriptions that may be asserted as results with this achievement.	[0..*]
+    resultDescription     ResultDescription[] //optional
+    // 'specialization' = Name given to the focus, concentration, or specific area of study defined in the achievement. Examples include 'Entrepreneurship', 'Technical Communication', and 'Finance'.	[0..1]
+    specialization        String?
+    // 'tag' = One or more short, human-friendly, searchable, keywords that describe the type of achievement.	[0..*]
+    tag                   String[]
+    updatedAt             DateTime                @updatedAt // Automatically updated when a record is modified
+    // 'version' = The version property allows issuers to set a version string for an Achievement. This is particularly useful when replacing a previous version with an update.	[0..1]
+    version               String?
+    // *NOTE: This class can be extended with additional properties.
+    // https://www.imsglobal.org/spec/ob/v3p0#extending-the-data-model
+
+    // `isPublic` = internal use only for display behavior on MCP platform.  This does not need to be an extension of the Achievement model and should be programatically removed when the credential is awarded to align with OBV3 standards.
+    isPublic   Boolean @default(false)
+    // `validFor` = necessary field for MVP only and will likely be removed in future iterations as this is set during the award action and referenced in the AchievementCredential and VerifiableCredential models.
+    // See [ticket 82](https://app.zenhub.com/workspaces/badging-backlog-652ff1e3cbe3ae043192057c/issues/gh/digital-promise/badging_backlog/82) for details
+    validityId String? @db.ObjectId
+
+    validFor Validity?
+
+    // Model relationships
+    awardHistory         AchievementSubject[]
+    assessmentExtensions AssessmentExtension[] @relation("AchievementToAssessmentExtensions") // optional
+}
+
+// https://www.imsglobal.org/spec/ob/v3p0/#related
+// Identifies a related achievement.
+model Related {
+    docId         String   @id @default(auto()) @map("_id") @db.ObjectId
+    // The related achievement. [1]
+    id        String
+    // 'type' = The value of the type property MUST be an unordered set. One of the items MUST be the IRI 'Related'.	[1..*]
+    type       String[]
+    // 'inLanguage' = The language of the related achievement.	[0..1]
+    inLanguage String? // could be enum
+    // 'version' = The version of the related achievement.	[0..1]
+    version    String?
+
+    // Model relationships
+    Achievement   Achievement? @relation(fields: [achievementId], references: [docId], name: "achievement")
+    achievementId String?      @db.ObjectId
+
+    // *NOTE: This class can be extended with additional properties.
+}
+
+// https://www.imsglobal.org/spec/ob/v3p0#org.1edtech.ob.v3p0.achievementtype.class
+// This enumeration can be extended with new, proprietary terms. Extending the vocabulary makes use of a naming convention. The new terms must start with the substring 'ext:'.
+enum AchievementType {
+    Achievement
+    ApprenticeshipCertificate
+    Assessment
+    Assignment
+    AssociateDegree
+    Award
+    Badge
+    BachelorDegree
+    Certificate
+    CertificateOfCompletion
+    Certification
+    CommunityService
+    Competency
+    CoCurricular
+    Degree
+    Diploma
+    DoctoralDegree
+    Fieldwork
+    GeneralEducationDevelopment
+    JourneymanCertificate
+    LearningProgram
+    License
+    Membership
+    ProfessionalDoctorate
+    QualityAssuranceCredential
+    MasterCertificate
+    MasterDegree
+    MicroCredential
+    ResearchDoctorate
+    SecondarySchoolDiploma
+    EventAttendance             @map("ext:EventAttendance")
+
+    // *NOTE: This enumeration can be extended with new, proprietary terms. Extending the vocabulary makes use of a naming convention. The new terms must start with the substring 'ext:'.
+}

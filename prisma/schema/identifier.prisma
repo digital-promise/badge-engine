@@ -1,0 +1,42 @@
+// https://www.imsglobal.org/spec/ob/v3p0#org.1edtech.ob.v3p0.identifierentry.class
+model IdentifierEntry {
+    id             String         @id @default(auto()) @map("_id") @db.ObjectId
+    // 'type' = 	The value of the type property MUST be an unordered set. One of the items MUST be the IRI 'IdentifierEntry'. [1]
+    type           String         @default("IdentifierEntry")
+    // 'identifier' = A NormalizedString that functions as an identifier. [1]
+    identifier     String
+    // 'identifierType' = The identifier type (enum). [1]
+    identifierType IdentifierType
+
+    // Model relationships
+    Profile       Profile      @relation(fields: [profileId], references: [docId])
+    profileId     String       @db.ObjectId
+    Achievement   Achievement? @relation(fields: [achievementId], references: [docId], name: "achievement")
+    achievementId String?      @db.ObjectId
+}
+
+// https://www.imsglobal.org/spec/ob/v3p0#org.1edtech.ob.v3p0.identifiertypeenum.class
+// *NOTE: This enumeration can be extended with new, proprietary terms. The new terms must start with the substring 'ext:'.
+enum IdentifierType {
+    name
+    sourcedId
+    systemId
+    productId
+    userName
+    accountId
+    emailAddress
+    nationalIdentityNumber
+    isbn
+    issn
+    lisSourcedId
+    oneRosterSourcedId
+    sisSourcedId
+    ltiContextId
+    ltiDeploymentId
+    ltiToolId
+    ltiPlatformId
+    ltiUserId
+    identifier
+
+    // *NOTE: This enumeration can be extended with new, proprietary terms. The new terms must start with the substring 'ext:'.
+}

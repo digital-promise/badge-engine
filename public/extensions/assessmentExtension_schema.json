@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "Assessment",
+  "description": "This extension provides information about single or multiple assessments that would be completed by the recipient as part of the requirements for earning an OpenBadge. There could be multiple assessments of different types for each badge earned. Separate, independent evaluations of a single assessment could result in multiple assessment/evaluation records, all included in a single instance of the extension. ",
+    "AssessmentObject": {
+        "type": "object",
+        "properties": {
+          "supportingResearchAndRational": {
+            "description": "This field provides peer reviewed and published citations for the achievement. Because our achievements are research-based, we put the research we used to write them in this section.",
+            "type": "string"
+          },
+          "resources": {
+            "description": "This field provides practice-based items (blog posts, videos) that can be used support users as they demonstrate their work.",
+            "type": "string"
+          }
+        },
+        "required": ["type"]
+    }
+}
