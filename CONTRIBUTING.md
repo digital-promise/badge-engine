@@ -1,7 +1,6 @@
 # Contributing to Badge Engine
 ## How to contribute
 * Submit an Issue for bug reporting
-* Open a Pull Request for code contribution review
 * Submit a Discussion item for ideas or community engagement on a topic
 
 
