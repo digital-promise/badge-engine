@@ -22,7 +22,17 @@ Your organization is solely responsible for creating and implementing its own Te
 This open-source software is provided under the [Apache 2.0 license].  By using this software, you agree to comply with the terms of that license.  We make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability or availability with respect to the software or the information, products, services, or related graphics contained on the software for any purpose. Any reliance you place on such information is therefore strictly at your own risk.
 
 ## Acknowledgements
-*Organizations and board acknowledgment goes here*
+Technical and user experience insights were provided by the Badging Coalition Advisory Board, which included the following key contributors:
+
+* Bill Brown, Web Accessibility Lead, Capellic
+* Rob Coyle, Technical Program Manager of Digital Credentials, 1EdTech
+* Kerri Lemoie, Director, MIT Digital Credentials Consortium
+* Philipp Schmidt, Vice President of Technology Innovation, Axim
+* Rita Fennelly-Atkinson, Senior Director, Credentials, Digital Promise
+* Christina Luke Luna, Chief Learning Officer, Digital Promise
+* Stef Mills, Senior Director of Technical Product Development, Digital Promise
+
+Thank you to [DCC](https://digitalcredentials.mit.edu/) and [1EdTech](https://www.1edtech.org/) teams for their technical thought partnership. Thank you to Walmart for funding the development and launch of Badge Engine v1.0.0, an open-source badging technology.
 
 ## License 
 Apache 2.0 (c) 2024 Digital Promise Global
