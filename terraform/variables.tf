@@ -35,7 +35,7 @@ variable "auth0_client_secret" {
   sensitive   = true
 }
 
-# Auth0 Crow Client created by TF
+# Auth0 Badge Engine Client created by TF
 variable auth0_client_allowed_origins {
   description = "Stringified list of Auth0 client allowed origins"
   type        = list(string)

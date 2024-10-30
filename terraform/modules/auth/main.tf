@@ -283,7 +283,7 @@ resource "auth0_client" "crow" {
   is_first_party                        = true
   is_token_endpoint_ip_header_trusted   = false
   logo_uri                              = "https://badging-build.vercel.app/_next/static/media/crow.4cb43831.svg"
-  name                                  = "Crow"
+  name                                  = "Badge Engine"
   oidc_backchannel_logout_urls          = []
   oidc_conformant                       = true
   organization_require_behavior         = "no_prompt"
