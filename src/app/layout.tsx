@@ -6,9 +6,9 @@ import { DashboardFooter } from "~/components/global/footer";
 import { NotificationProvider, Notifications } from "~/components/global/notifications";
 
 export const metadata: Metadata = {
-  title: "Placeholder Crow",
+  title: "Badge Engine",
   description: "A solution for issuing verifiable credentials.",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/badge-engine-icon.svg" }],
   robots: {
     index: false,
     follow: false,

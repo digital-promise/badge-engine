@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { getServerSession } from "next-auth/next";
-import crowSVG from "~/assets/illustrations/crow.svg";
 import { authOptions } from "~/server/auth";
 import Login from "~/components/login";
 import Logout from "~/components/logout";
+
+import badgeEngineByDigitalPromise from "public/alt-badge-engine-logo-color.svg";
 
 export default async function Welcome() {
   const session = await getServerSession(authOptions);
@@ -12,15 +13,15 @@ export default async function Welcome() {
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center gap-6 py-8">
       <div className="flex flex-col items-center gap-4 text-center">
         <Image
-          src={crowSVG as string}
+          src={badgeEngineByDigitalPromise}
           priority={true}
-          height={200}
-          width={200}
+          height={144}
+          width={216}
           alt=""
         />
 
         <div className="flex flex-col gap-2">
-          <h1 className="text-xl font-bold">Welcome to Crow!</h1>
+          <h1 className="text-xl font-bold">Welcome to Badge Engine!</h1>
           {session === null && (
             <p>
               Please sign in to see what we&apos;ve got for the first release.
