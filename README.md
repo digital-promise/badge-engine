@@ -11,7 +11,7 @@ Badge Engine is a stable, open-source technology that allows organizations to ea
 The main goal for Badge Engine is to provide a stable, open-source technology that allows organizations to easily create and manage their own digital badging platforms. By adhering to global standards, Badge Engine ensures that digital credentials are portable, recognizable, and learner-controlled across institutions and industries. We acknowledge the work is never done and in a state of perpetual and continuous improvement. For more information on Badge Engine visit: www.badgeengine.org
 
 ## Development Setup
-*Information on how to instantiate Badge Engine goes here or we could link to a separate document, which might be preferable*
+Link to published [Developer Documentation](https://digitalpromise.gitbook.io/badge-engine-technical-documentation/)
 
 ## Accessibility
 Digital Promise champions an inclusive community where accessibility is paramount.  We believe that everyone, regardless of ability, should be empowered to create and share content using technology. Recognizing that disabilities are a natural part of the human experience – encompassing permanent, temporary, and situational limitations – we prioritize accessibility to ensure our work reflects our core values.  In today's digitally interconnected world, accessible technology is essential for full participation, and Digital Promise is committed to being a leader in this movement. Therefore, we have committed to frequent, in-house, UX/UI audits based on the WCAG accessibility rating system. Any updates to the code base that improve product accessibility will be noted in the Badge Engine changelog. 
