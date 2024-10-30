@@ -5,7 +5,7 @@
 ### Shaping the Future of Learning with Open-Source Digital Credentials
 Digital Promise is committed to advancing equitable education by uniting research, practice, and technology into scalable solutions. Badge Engine is an open-source badging technology designed to empower learners and organizations alike.
 ### What is Badge Engine?
-Badge Engine is a stable, open-source technology that allows organizations to easily create and manage their own digital badging programs. By adhering to global standards, Badge Engine ensures that digital credentials are portable, recognizable, and learner-controlled across institutions and industries.
+Badge Engine is a stable, open-source technology that allows organizations to easily create and manage their own digital badging programs. By adhering to global standards such as [Open Badges Specification 3.0](https://www.imsglobal.org/spec/ob/v3p0), Badge Engine ensures that digital credentials are portable, recognizable, and learner-controlled across institutions and industries.
 
 ## Goals
 The main goal for Badge Engine is to provide a stable, open-source technology that allows organizations to easily create and manage their own digital badging platforms. By adhering to global standards, Badge Engine ensures that digital credentials are portable, recognizable, and learner-controlled across institutions and industries. We acknowledge the work is never done and in a state of perpetual and continuous improvement. For more information on Badge Engine visit: www.badgeengine.org
