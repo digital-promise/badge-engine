@@ -13,7 +13,7 @@ export default async function Welcome() {
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center gap-6 py-8">
       <div className="flex flex-col items-center gap-4 text-center">
         <Image
-          src={badgeEngineByDigitalPromise}
+          src={badgeEngineByDigitalPromise as string}
           priority={true}
           height={144}
           width={216}
