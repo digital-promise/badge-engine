@@ -1,8 +1,12 @@
 # Contributing to Badge Engine
-### How to contribute
-Text here
+## How to contribute
+* Submit an Issue for bug reporting
+* Open a Pull Request for code contribution review
+* Submit a Discussion item for ideas or community engagement on a topic
 
-### Developer's Certificate of Origin
+
+### Developer's Certificate of Origin 1.1
+Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
 
 ```By making a contribution to this project, I certify that:
 
