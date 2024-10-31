@@ -18,7 +18,7 @@ declare module "@digitalbazaar/ed25519-multikey" {
   }
 
   interface KeyPair {
-    export: (args: KeyPairExportArgs) => Multikey;
+    export: (args: KeyPairExportArgs) => Promise<Multikey>;
     signer: () => {
       sign: ({ data }: { data: Uint8Array }) => Promise<Uint8Array>;
     };
@@ -26,7 +26,7 @@ declare module "@digitalbazaar/ed25519-multikey" {
 
   type KeyPairExportArgs = {
     publicKey: boolean;
-    privateKey: boolean;
+    secretKey: boolean;
   };
 
   type Multikey = {
