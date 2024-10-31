@@ -1,0 +1,6 @@
+model Multikey {
+    docId              String @id @default(auto()) @map("_id") @db.ObjectId
+    id                 String @unique
+    publicKeyMultibase String
+    secretKeyMultibase String
+}
