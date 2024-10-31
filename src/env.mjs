@@ -41,6 +41,7 @@ export const env = createEnv({
     ISSUER_PRIVATE_KEY_SECRET_NAME: z.string(),
     ISSUER_PRIVATE_KEY_READ_ROLE_ARN: z.string(),
     ISSUER_PRIVATE_KEY_FROM_ORIGIN: z.string().optional(), // typed as optional, set by instrumentation.ts
+    AWS_KMS_KEY_ID: z.string(),
 
     AWS_REGION: z.string(),
     AWS_ACCESS_KEY_ID: z.string(),
@@ -78,6 +79,7 @@ export const env = createEnv({
 
     // Actual issuer private key - set by instrumentation.ts
     ISSUER_PRIVATE_KEY_FROM_ORIGIN: process.env.ISSUER_PRIVATE_KEY_FROM_ORIGIN,
+    AWS_KMS_KEY_ID: process.env.AWS_KMS_KEY_ID,
 
     // AWS config for reading AWS secret manager secret key
     AWS_REGION: process.env.AWS_REGION,
