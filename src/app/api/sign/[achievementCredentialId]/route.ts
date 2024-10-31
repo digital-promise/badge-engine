@@ -16,9 +16,10 @@ const POST = async function POST(
         achievementCredentialId,
       );
 
-      const signedCredential = await api.signing.createProof.mutate(
-        achievementCredential,
-      );
+      const signedCredential = await api.signing.createProof.mutate({
+        ...achievementCredential,
+        type: ["VerifiableCredential", ...achievementCredential.type],
+      });
 
       return NextResponse.json(signedCredential);
     } catch (e) {
