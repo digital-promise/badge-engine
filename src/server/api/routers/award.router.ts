@@ -66,8 +66,13 @@ export const awardRouter = createTRPCRouter({
 
       return ctx.prismaConnect.$transaction(async (prisma) => {
         const credential = await prisma.achievement.findUniqueOrThrow({
-          where: { id: credentialId },
-          select: { id: true, creatorId: true, name: true, description: true },
+          where: { docId: credentialId },
+          select: {
+            docId: true,
+            creatorId: true,
+            name: true,
+            description: true,
+          },
         });
 
         const identityObject = await prisma.identityObject.upsert({
@@ -86,9 +91,9 @@ export const awardRouter = createTRPCRouter({
 
         const awardSubject: Prisma.AchievementSubjectCreateInput = {
           identifier: { connect: { id: identityObject.id } },
-          achievement: { connect: { id: credential.id } },
+          achievement: { connect: { docId: credential.docId } },
           type: ["AchievementSubject"],
-          source: { connect: { id: credential.creatorId! } },
+          source: { connect: { docId: credential.creatorId! } },
           profile: {
             create: {
               ...profile,
@@ -109,7 +114,7 @@ export const awardRouter = createTRPCRouter({
           awardedDate: new Date().toISOString(),
           validFrom: new Date().toISOString(),
           credentialSubject: { connect: { docId: awardee.docId } },
-          issuer: { connect: { id: credential.creatorId! } },
+          issuer: { connect: { docId: credential.creatorId! } },
         };
 
         const { docId } = await prisma.achievementCredential.create({
