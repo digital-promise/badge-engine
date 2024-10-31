@@ -1,7 +1,10 @@
 "use client";
 
 import SingleImageDropzone from "~/components/forms/dropzone";
-import { createIssuer, IssuerFormState } from "~/server/actions/create-issuer";
+import {
+  createIssuer,
+  type IssuerFormState,
+} from "~/server/actions/create-issuer";
 import { useForm } from "react-hook-form";
 import { FormError, useFormErrors } from "./errors";
 import type { Issuer } from "~/server/api/schemas/issuerProfile.schema";
@@ -29,7 +32,7 @@ export function IssuingOrganizationForm({ issuer }: { issuer?: Issuer }) {
   } = useForm();
 
   const onSubmit = handleSubmit(async (_data, event) => {
-    const formData = new FormData(event!.target)
+    const formData = new FormData(event!.target as HTMLFormElement);
     const newFormState = await createOrUpdateIssuer(formData);
 
     if (newFormState.success) {
