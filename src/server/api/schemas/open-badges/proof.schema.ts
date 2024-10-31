@@ -20,7 +20,7 @@ export const proofSchema = z.object({
   verificationMethod: z.string().nullish(),
 });
 
-export type Proof = z.infer<typeof proofSchema>
+export type Proof = z.infer<typeof proofSchema>;
 
 export const dataIntegrityProofConfigSchema = z.object({
   type: z.string().default("DataIntegrityProof"),
@@ -29,10 +29,14 @@ export const dataIntegrityProofConfigSchema = z.object({
 });
 
 export const dataIntegrityProofSchema = dataIntegrityProofConfigSchema.extend({
+  challenge: z.string().nullish(),
+  domain: z.string().nullish(),
+  nonce: z.string().nullish(),
   proofPurpose: z.string().default("assertionMethod"),
   proofValue: z
     .string()
     .min(88)
     .max(89)
     .regex(/^z[1-9A-HJ-NP-Za-km-z]+/),
+  verificationMethod: z.string().nullish(),
 });

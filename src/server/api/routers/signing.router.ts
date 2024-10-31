@@ -15,7 +15,7 @@ export const signingRouter = createTRPCRouter({
   createProof: protectedProcedure
     .input(createVerifiableAchievementCredentialSchema)
     .mutation(async ({ input }) => {
-      const keypair = await getOrCreateKey()
+      const keypair = await getOrCreateKey();
 
       const { sign } = keypair.signer();
 
@@ -54,10 +54,14 @@ export const signingRouter = createTRPCRouter({
        * @link https://www.w3.org/TR/vc-di-eddsa/#dataintegrityproof
        */
       const proofValue = "z" + encode(proofBytes);
+      const { id: verificationMethod } = await keypair.export({
+        publicKey: true,
+      });
       const proof = dataIntegrityProofSchema.parse({
         ...options,
         proofPurpose: "assertionMethod",
         proofValue,
+        verificationMethod,
       });
 
       const credential = achievementCredentialSchema.parse({

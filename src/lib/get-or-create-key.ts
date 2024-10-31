@@ -54,7 +54,3 @@ export async function getOrCreateKey() {
 
   return keypair;
 }
-
-const result = await getOrCreateKey();
-
-console.debug(result);

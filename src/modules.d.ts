@@ -26,7 +26,7 @@ declare module "@digitalbazaar/ed25519-multikey" {
 
   type KeyPairExportArgs = {
     publicKey: boolean;
-    secretKey: boolean;
+    secretKey?: boolean;
   };
 
   type Multikey = {
