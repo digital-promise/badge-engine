@@ -18,7 +18,7 @@ export const credentialRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const baseWhere = {
-        ...(input.issuerId ? { creator: { id: input.issuerId } } : {}),
+        ...(input.issuerId ? { creator: { docId: input.issuerId } } : {}),
       } satisfies Prisma.AchievementWhereInput;
 
       const pagination = {
@@ -134,7 +134,7 @@ export const credentialRouter = createTRPCRouter({
                 ...data,
                 id: uuidUri(), // Required
                 type: ["Achievement"],
-                creator: { connect: { id: issuer } },
+                creator: { connect: { docId: issuer } },
                 image: { connect: { docId: image.docId } },
                 criteria: createCriteriaQuery,
                 resultDescription: createResultDescriptionQuery,

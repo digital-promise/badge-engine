@@ -12,7 +12,7 @@ export default function ConfirmAndCreate({
 }: {
   className?: string;
 }) {
-  const { id: issuerId } = useIssuerContext();
+  const { docId: issuerId } = useIssuerContext();
   const { form, isExtrasComplete, setIsExtrasComplete } = useAchievementStore();
   const { notify } = useNotifications();
   const router = useRouter();

@@ -37,7 +37,7 @@ export default function Basics() {
     resolver: zodResolver(BasicsSectionSchema),
   });
     
-  const { id: issuerId } = useIssuerContext();
+  const { docId: issuerId } = useIssuerContext();
   const router = useRouter();
   const dropdownOptions: AchievementTypeOption[] =
     transformEnum(AchievementType).sort((a, b) => a.label.localeCompare(b.label));

@@ -12,7 +12,7 @@ import { useNotifications } from "~/providers/notifications";
 import ConfirmAndCreate from "./ConfirmAndCreate";
 
 export default function CredentialPreview() {
-  const { id: issuerId } = useIssuerContext();
+  const { docId: issuerId } = useIssuerContext();
   const { form } = useAchievementStore();
   const { notify } = useNotifications();
   const router = useRouter();

@@ -9,7 +9,7 @@ import { CREDENTIAL_FORM_STEPS } from "~/lib/constants";
 
 export function CredentialFormNav() {
   const pathname = usePathname();
-  const { id: issuerId } = useIssuerContext();
+  const { docId: issuerId } = useIssuerContext();
   const { currentStep, setStep, completedSteps } = useAchievementStore();
   const baseUrl = `/issuers/${issuerId}/credentials/new`;
 

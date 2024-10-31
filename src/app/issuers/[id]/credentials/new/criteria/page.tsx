@@ -384,7 +384,7 @@ export default function CredentialCriteria() {
   const { form } = useAchievementStore();
 
   const router = useRouter();
-  const { id: issuerId } = useIssuerContext();
+  const { docId: issuerId } = useIssuerContext();
   const {
     register,
     control,
