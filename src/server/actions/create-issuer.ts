@@ -11,7 +11,6 @@ export type IssuerFormState = FormState & { profileName?: string };
 
 export const createIssuer = async (
   issuerId: string,
-  _state: IssuerFormState | null,
   formData: FormData,
 ) => {
   const response: IssuerFormState = { success: false };
@@ -27,7 +26,7 @@ export const createIssuer = async (
     }
 
     const input = await issuerProfileSchema.parseAsync({
-      id: issuerId,
+      docId: issuerId,
       createdAt: new Date().toJSON(),
       updatedAt: new Date().toJSON(),
       isActive: Boolean(
