@@ -1,6 +1,6 @@
 import { createHash } from "crypto";
 import { encode } from "base58-universal";
-import * as Ed25519Multikey from "@digitalbazaar/ed25519-multikey";
+import { getOrCreateKey } from "~/lib/get-or-create-key";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
   dataIntegrityProofConfigSchema,
@@ -15,7 +15,7 @@ export const signingRouter = createTRPCRouter({
   createProof: protectedProcedure
     .input(createVerifiableAchievementCredentialSchema)
     .mutation(async ({ input }) => {
-      const keypair = await Ed25519Multikey.generate();
+      const keypair = await getOrCreateKey()
 
       const { sign } = keypair.signer();
 
