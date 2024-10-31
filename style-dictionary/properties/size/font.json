@@ -1,0 +1,32 @@
+{
+  "size": {
+    "font": {
+      "small": {
+        "value": "0.875",
+        "comment": "The smallest font size."
+      },
+      "medium": {
+        "value": "1",
+        "comment": "The default font size."
+      },
+      "medium-large": {
+        "value": "1.25"
+      },
+      "large": {
+        "value": "1.5"
+      },
+      "x-large": {
+        "value": "2"
+      },
+      "xx-large": {
+        "value": "3"
+      },
+      "xxx-large": {
+        "value": "4"
+      },
+      "base": {
+        "value": "{size.font.medium.value}"
+      }
+    }
+  }
+}

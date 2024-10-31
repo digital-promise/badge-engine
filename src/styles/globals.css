@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-size: 16px;
+}
+
+*,
+::after,
+::before {
+  @apply box-border;
+}
+
+strong { @apply font-bold; }
+
+.btn {
+  @apply font-bold bg-blue-3 hover:bg-blue-4 focus:bg-blue-4 transition text-neutral-1 px-5 py-3 rounded-3xl;
+}
+
+.sidebar-menu > li {
+  @apply px-4 py-3 rounded-lg;
+
+  &.active {
+    @apply bg-blue-1 text-blue-4;
+  }
+}

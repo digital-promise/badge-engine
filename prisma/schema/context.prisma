@@ -1,0 +1,33 @@
+// https://www.imsglobal.org/spec/ob/v3p0#org.1edtech.ob.v3p0.credentialschema.class
+// Identify the type and location of a data schema.
+model CredentialSchema {
+    docId   String @id @default(auto()) @map("_id") @db.ObjectId
+    // The value MUST be a URI identifying the schema file. One instance of CredentialSchema MUST have an id that is the URL of the JSON Schema for this credential defined by this specification. [1]
+    // Add the URI for the achievement_schema.json when available
+    id  String
+    // 	'type' = The value MUST identify the type of data schema validation. One instance of CredentialSchema MUST have a type of 'JsonSchemaValidator2019'. [1]
+    type String
+
+    //{
+    //...
+    //"credentialSchema": [{
+    //"id": "https://purl.imsglobal.org/spec/ob/v3p0/schema/json/ob_v3p0_achievementcredential_schema.json",
+    //"type": "1EdTechJsonSchemaValidator2019"
+    //}, {
+    //"id": "https://your_url/your_schema.json",
+    //"type": "1EdTechJsonSchemaValidator2019"
+    //}]
+    //...
+    //}
+
+    // Model relationships
+    EndorsementCredential   EndorsementCredential? @relation(fields: [endorsementCredentialId], references: [docId])
+    endorsementCredentialId String?                @db.ObjectId
+    AchievementCredential   AchievementCredential? @relation(fields: [achievementCredentialId], references: [docId], name: "achievementCredential")
+    achievementCredentialId String?                @db.ObjectId
+    VerifiableCredential    VerifiableCredential?  @relation(fields: [verifiableCredentialId], references: [docId], name: "verifiableCredential")
+    verifiableCredentialId  String?                @db.ObjectId
+    AssessmentExtension     AssessmentExtension?   @relation(fields: [assessmentExtensionId], references: [id])
+    assessmentExtensionId   String?                @db.ObjectId
+    // *NOTE: This class can be extended with additional properties.
+}

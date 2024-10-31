@@ -1,0 +1,6 @@
+.terraform
+*.tfstate
+*.tfstate.backup
+
+# used for local IaC testing AND for TF cli import
+terraform.tfvars 

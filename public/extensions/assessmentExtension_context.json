@@ -1,0 +1,19 @@
+{
+  "@context": {
+    "obi": "https://w3id.org/openbadges#",
+    "extensions": "https://w3id.org/openbadges/extensions#",
+    "schema": "http://schema.org/",
+    "case": "https://purl.imsglobal.org/spec/case/vocab#",
+
+    "supportingResearchAndRationale": "extensions:supportingResearchAndRationale",
+    "resources": "extensions:resources"
+  },
+  "obi:validation": [
+    {
+      "obi:validatesType": "extensions:AssessmentExtension",
+      "obi:validationSchema": ""
+    }
+  ]
+}
+
+

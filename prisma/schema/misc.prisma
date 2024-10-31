@@ -1,0 +1,84 @@
+// https://www.imsglobal.org/spec/ob/v3p0#org.1edtech.ob.v3p0.image.class
+// Metadata about images that represent assertions, achieve or profiles. These properties can typically be represented as just the id string of the image, but using a fleshed-out document allows for including captions and other applicable metadata.
+model Image {
+    docId               String  @id @default(auto()) @map("_id") @db.ObjectId
+    // The URI or Data URI of the image. [1]
+    id              String
+    // 	'type' = MUST be the IRI 'Image'. [1]
+    // IRI = A NormalizedString that represents an Internationalized Resource Identifier (IRI), which extends the ASCII characters subset of the Uniform Resource Identifier (URI).
+    type             String  @default("Image")
+    // 'caption' = The caption for the image. [0..1]
+    caption          String?
+    encodedImageData String?
+
+    // Model relationships
+    Profile               Profile[]
+    Achievement           Achievement[]
+    AchievementSubject    AchievementSubject[]
+    AchievementCredential AchievementCredential[]
+}
+
+// `Validity` = necessary field for MVP, might be removed in future iterations as this is set during the award action and referenced in the AchievementCredential and VerifiableCredential models.
+// See [ticket 82](https://app.zenhub.com/workspaces/badging-backlog-652ff1e3cbe3ae043192057c/issues/gh/digital-promise/badging_backlog/82) for details
+// all fields are optional but one and only one is required. [1]
+model Validity {
+    id              String      @id @default(auto()) @map("_id") @db.ObjectId
+    neverExpires    Boolean?
+    dateRange       DateRange?
+    specifiedPeriod TimePeriod?
+
+    // model realtionships
+    Achievement Achievement @relation(fields: [id], references: [docId])
+}
+
+// `DateRange` = necessary field for MVP only and will likely be removed in future iterations as this is set during the award action and referenced in the AchievementCredential and VerifiableCredential models.
+// See [ticket 82](https://app.zenhub.com/workspaces/badging-backlog-652ff1e3cbe3ae043192057c/issues/gh/digital-promise/badging_backlog/82) for details
+model DateRange {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    startDate DateTime
+    endDate   DateTime
+
+    // model realtionships
+    Validity Validity @relation(fields: [id], references: [id])
+}
+
+// `TimePeriod` = necessary field for MVP only and will likely be removed in future iterations as this is set during the award action and referenced in the AchievementCredential and VerifiableCredential models.
+// See [ticket 82](https://app.zenhub.com/workspaces/badging-backlog-652ff1e3cbe3ae043192057c/issues/gh/digital-promise/badging_backlog/82) for details
+model TimePeriod {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    numberInput Int
+    duration    Duration
+
+    // model realtionships
+    Validity Validity @relation(fields: [id], references: [id])
+}
+
+// `Duration` = necessary field for MVP only and will likely be removed in future iterations as this is set during the award action and referenced in the AchievementCredential and VerifiableCredential models.
+// See [ticket 82](https://app.zenhub.com/workspaces/badging-backlog-652ff1e3cbe3ae043192057c/issues/gh/digital-promise/badging_backlog/82) for details
+enum Duration {
+    YEARS
+    MONTHS
+    WEEKS
+    DAYS
+    HOURS
+}
+
+// https://www.imsglobal.org/spec/ob/v3p0#org.1edtech.ob.v3p0.termsofuse.class
+// Terms of use can be utilized by an issuer or a holder to communicate the terms under which a verifiable credential or verifiable presentation was issued.
+model TermsOfUse {
+    docId   String  @id @default(auto()) @map("_id") @db.ObjectId
+    // The value MUST be a URI identifying the term of use. [0..1]
+    id  String?
+    // 	'type' = The value MUST identify the type of the terms of use. [1]
+    type String
+
+    // Model relationships
+    EndorsementCredential   EndorsementCredential? @relation(fields: [endorsementCredentialId], references: [docId])
+    endorsementCredentialId String?                @db.ObjectId
+    AchievementCredential   AchievementCredential? @relation(fields: [achievementCredentialId], references: [docId], name: "achievementCredential")
+    achievementCredentialId String?                @db.ObjectId
+    VerifiableCredential    VerifiableCredential?  @relation(fields: [verifiableCredentialId], references: [docId], name: "verifiableCredential")
+    verifiableCredentialId  String?                @db.ObjectId
+
+    // *NOTE: This class can be extended with additional properties.
+}

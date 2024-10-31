@@ -1,0 +1,18 @@
+{
+  "color": {
+      "primary": {
+        "value": "{color.blue.4}",
+        "comment": "Primary brand color."
+      },
+      "primary-hover": { "value": "{color.blue.1}" },
+      "danger": {
+        "value": "{color.red.4}",
+        "comment": "Color that highlights dangerous actions."
+      },
+      "danger-hover": { "value": "{color.red.5}" },
+      "disabled": {
+        "value": "{color.gray.3}",
+        "comment": "Color indicating an action is disabled."
+      }
+    }
+}

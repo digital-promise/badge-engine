@@ -1,0 +1,6 @@
+type CriteriaType {
+    // The URI of a webpage that describes in a human-readable format the criteria for the achievement.
+    id       String?
+    // A narrative of what is needed to earn the achievement. Markdown is allowed.
+    narrative String?
+}
