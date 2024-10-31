@@ -29,7 +29,7 @@ export function IssuerDetailNav() {
     return "";
   }
 
-  let issuerImageSrc = "/DigitalPromise.svg";
+  let issuerImageSrc = "/alt-badge-engine-logo-black.svg";
 
   if (issuer.image) {
     issuerImageSrc = issuer.image.id;

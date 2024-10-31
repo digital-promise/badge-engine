@@ -55,7 +55,7 @@ const IssuerCard = ({
 }: {
   issuer: RouterOutputs["issuer"]["index"][2][number];
 }) => {
-  let issuerImageSrc = "/DigitalPromise.svg";
+  let issuerImageSrc = "/alt-badge-engine-logo-black.svg";
 
   if (issuer.image) {
     issuerImageSrc = issuer.image.id;
