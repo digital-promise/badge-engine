@@ -32,7 +32,10 @@ Technical and user experience insights were provided by the Badging Coalition Ad
 * Christina Luke Luna, Chief Learning Officer, Digital Promise
 * Stef Mills, Senior Director of Technical Product Development, Digital Promise
 
-Thank you to [DCC](https://digitalcredentials.mit.edu/) and [1EdTech](https://www.1edtech.org/) teams for their technical thought partnership. Thank you to Walmart for funding the development and launch of Badge Engine v1.0.0, an open-source badging technology.
+Thank you to [DCC](https://digitalcredentials.mit.edu/) and [1EdTech](https://www.1edtech.org/) teams for their technical thought partnership. 
+
+The development of Badge Engine v1.0.0, an open-source badging technology, was funded by Walmart.
+
 
 ## License 
 Apache 2.0 (c) 2024 Digital Promise Global
