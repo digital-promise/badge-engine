@@ -21,7 +21,7 @@ export default async function Issuers({
     limit,
   });
 
-  if (total === 0) return <NoIssuers />;
+  if (total === 0) return <main className="mx-auto flex min-h-screen max-w-[75rem] flex-col gap-6 py-8"><NoIssuers /></main>;
 
   const IssuerItems = () =>
     issuers.map((issuer, index) => <IssuerCard key={index} issuer={issuer} />);
