@@ -15,3 +15,15 @@ variable auth0_client_initiate_login_uri {
   type        = string
   default     = "http://localhost:3000/api/auth/signin"
 }
+
+variable "branding_logo" {
+  description = "Branding logo"
+  type        = string
+  default     = "https://example.com/logo.png"
+}
+
+variable "tenant_picture" {
+  description = "Tenant picture"
+  type        = string
+  default     = "https://example.com/tenant-picture.png"
+}

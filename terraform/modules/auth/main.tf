@@ -29,7 +29,7 @@ resource "auth0_tenant" "tenant" {
   enabled_locales                               = ["en"]
   friendly_name                                 = null
   idle_session_lifetime                         = 72
-  picture_url                                   = "https://badging-build.vercel.app/_next/image?url=%2FPlaceholderCrow.png&w=384&q=75"
+  picture_url                                   = var.tenant_picture
   sandbox_version                               = "18"
   session_lifetime                              = 168
   support_email                                 = null
@@ -282,7 +282,7 @@ resource "auth0_client" "crow" {
   initiate_login_uri                    = var.auth0_client_initiate_login_uri
   is_first_party                        = true
   is_token_endpoint_ip_header_trusted   = false
-  logo_uri                              = "https://badging-build.vercel.app/_next/static/media/crow.4cb43831.svg"
+  logo_uri                              = var.branding_logo
   name                                  = "Badge Engine"
   oidc_backchannel_logout_urls          = []
   oidc_conformant                       = true
@@ -641,7 +641,7 @@ resource "auth0_connection" "google_oauth2" {
 # __generated__ by Terraform from "86906c92-4b72-47fd-b730-40cb53daeec3"
 resource "auth0_branding" "branding" {
   favicon_url = null
-  logo_url    = "https://badging-build.vercel.app/_next/image?url=%2FPlaceholderCrow.png&w=384&q=75"
+  logo_url    = var.branding_logo
   colors {
     page_background = "#F4F4F4"
     primary         = "#348EC7"

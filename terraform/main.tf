@@ -40,6 +40,9 @@ module "auth" {
   auth0_client_allowed_origins = var.auth0_client_allowed_origins
   auth0_client_callbacks = var.auth0_client_callbacks
   auth0_client_initiate_login_uri = var.auth0_client_initiate_login_uri
+
+  branding_logo = local.branding_logo
+  tenant_picture = local.tenant_picture
 }
 
 
