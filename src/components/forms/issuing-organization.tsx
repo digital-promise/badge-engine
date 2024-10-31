@@ -1,74 +1,57 @@
 "use client";
 
-import "~/styles/forms.css";
 import SingleImageDropzone from "~/components/forms/dropzone";
-import { createIssuer } from "~/server/actions/create-issuer";
-import { useFormState } from "react-dom";
+import { createIssuer, IssuerFormState } from "~/server/actions/create-issuer";
 import { useForm } from "react-hook-form";
 import { FormError, useFormErrors } from "./errors";
 import type { Issuer } from "~/server/api/schemas/issuerProfile.schema";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { useNotifications } from "~/providers/notifications";
 import { useRouter } from "next/navigation";
+import "~/styles/forms.css";
 
 export function IssuingOrganizationForm({ issuer }: { issuer?: Issuer }) {
-  const issuerId = issuer?.docId ?? "";
-  const createOrUpdateIssuer = createIssuer.bind(null, issuerId);
-  const [state, action] = useFormState(createOrUpdateIssuer, {
-    success: false,
-  });
+  const [state, setState] = useState<IssuerFormState>({ success: false });
   const router = useRouter();
   const { notify } = useNotifications();
-
+  const issuerId = issuer?.docId ?? "";
+  const createOrUpdateIssuer = createIssuer.bind(null, issuerId);
   const formErrors = useFormErrors(state);
   const { getFieldErrorMessage, getGeneralErrorMessages, hasFieldError } =
     formErrors;
   const [hasError, setHasError] = useState<Record<string, boolean>>({});
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
   const {
+    handleSubmit,
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     trigger,
   } = useForm();
 
-  const onSuccess = useCallback(() => {
-    notify({
-      type: "success",
-      message: issuerId
-        ? "Successfully saved changes."
-        : `Successfully added ${state.profileName ? state.profileName : "profile"}.`,
-    });
+  const onSubmit = handleSubmit(async (_data, event) => {
+    const formData = new FormData(event!.target)
+    const newFormState = await createOrUpdateIssuer(formData);
 
-    if (!issuerId) {
-      router.push("/issuers");
-    } else {
-      setIsSubmitting(false);
-      setIsSubmitted(false);
+    if (newFormState.success) {
+      notify({
+        type: "success",
+        message: issuerId
+          ? "Successfully saved changes."
+          : `Successfully added ${newFormState.profileName ? newFormState.profileName : "profile"}.`,
+      });
+
+      if (!issuerId) {
+        router.push("/issuers");
+      }
     }
-  }, [issuerId, notify, router, state.profileName]);
 
-  useEffect(() => {
-    if (state.success) onSuccess();
-  }, [state, onSuccess]);
+    setState(newFormState);
+  });
 
   const imagePreview = issuer?.image?.id ? issuer.image.id : undefined;
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (isSubmitting || isSubmitted) return;
-
-    setIsSubmitting(true);
-
-    action(new FormData(event.target as HTMLFormElement));
-
-    setIsSubmitted(true);
-  };
-
   return (
-    <form className="dashboard-form" onSubmit={handleSubmit}>
+    <form className="dashboard-form" onSubmit={onSubmit}>
       <h2 className="heading">Basic Information</h2>
 
       {getGeneralErrorMessages().map((message, index) => (

@@ -4,7 +4,6 @@ import {
   createContext,
   type ReactNode,
   useContext,
-  useEffect,
   useState,
 } from "react";
 
@@ -34,14 +33,6 @@ export const NotificationContext = createContext<NotificationContext | null>(
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<Notification[]>([]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setState(state.slice(1));
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [state]);
-
   function notify({ ...props }: NotificationProps) {
     const id = (state.length + 1) % Number.MAX_SAFE_INTEGER;
     setState([
@@ -56,6 +47,10 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       top: 0,
       behavior: "smooth",
     });
+
+    const _timeout = setTimeout(() =>
+      setState((notifications) => notifications.filter((n) => n.id !== id)), 5000
+    );
   }
 
   const context = {
