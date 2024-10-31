@@ -8,7 +8,7 @@ import { PreviewCredentialSchema } from "~/server/api/schemas/credential.schema"
 import { useAchievementStore } from "~/providers/achievement-form-provider";
 import Credential from "./Credential";
 import { useIssuerContext } from "~/providers/issuer-provider";
-import { useNotifications } from "~/components/global/notifications";
+import { useNotifications } from "~/providers/notifications";
 import ConfirmAndCreate from "./ConfirmAndCreate";
 
 export default function CredentialPreview() {

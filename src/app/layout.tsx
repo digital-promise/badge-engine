@@ -3,7 +3,8 @@ import "~/styles/globals.css";
 import { museo } from "~/assets/fonts";
 import { DashboardHeader } from "~/components/global/header";
 import { DashboardFooter } from "~/components/global/footer";
-import { NotificationProvider, Notifications } from "~/components/global/notifications";
+import { NotificationProvider } from "~/providers/notifications";
+import { Notifications } from "~/components/global/notifications";
 
 export const metadata: Metadata = {
   title: "Badge Engine",

@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { FormError, useFormErrors } from "./errors";
 import type { Issuer } from "~/server/api/schemas/issuerProfile.schema";
 import { useCallback, useEffect, useState } from "react";
-import { useNotifications } from "~/components/global/notifications";
+import { useNotifications } from "~/providers/notifications";
 import { useRouter } from "next/navigation";
 
 export function IssuingOrganizationForm({ issuer }: { issuer?: Issuer }) {
