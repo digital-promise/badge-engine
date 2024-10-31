@@ -17,6 +17,7 @@ const POST = async function POST(
 
       const newAward = await api.award.create.mutate({
         ...awardInput,
+        email: "victor@gmail.com",
         credentialId,
       });
       return NextResponse.json(newAward);
