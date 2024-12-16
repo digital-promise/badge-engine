@@ -6,11 +6,14 @@ import { CreateAwardSchema } from "../schemas/award.schema";
 import {
   protectedAchievementCredentialInclude,
   publicAchievementCredentialSelect,
+  // publicAchievementCredentialStatusSelect,
 } from "~/server/db/queries";
 import { env } from "~/env.mjs";
 import { mongoDbObjectId } from "../schemas/util.schema";
+// import { addCredentialStatus } from "../network-functions/add-credential-status";
 
 export const awardRouter = createTRPCRouter({
+  // Finds a credential by id, includes credentialStatus
   find: protectedProcedure
     .input(mongoDbObjectId)
     .query(async ({ ctx, input }) => {
@@ -19,6 +22,8 @@ export const awardRouter = createTRPCRouter({
         include: protectedAchievementCredentialInclude,
       });
     }),
+
+  // returns a list of awarded credentials by ID
   index: protectedProcedure
     .input(
       z.object({
@@ -59,6 +64,7 @@ export const awardRouter = createTRPCRouter({
       });
     }),
 
+  // Creates a new achievementCredential for the specified learner Profile
   create: protectedProcedure
     .input(CreateAwardSchema)
     .mutation(async ({ ctx, input }) => {
@@ -75,12 +81,8 @@ export const awardRouter = createTRPCRouter({
           },
         });
 
-        const identityObject = await prisma.identityObject.upsert({
-          where: {
-            identityHash: identifier,
-          },
-          update: {},
-          create: {
+        const identityObject = await prisma.identityObject.create({
+          data: {
             type: "IdentityObject",
             identityHash: identifier,
             identityType: IdentifierType.emailAddress,
@@ -122,6 +124,7 @@ export const awardRouter = createTRPCRouter({
           select: { docId: true },
         });
 
+        // const awardedCredentialWithId = await
         return prisma.achievementCredential.update({
           where: { docId },
           data: {
@@ -129,6 +132,23 @@ export const awardRouter = createTRPCRouter({
           },
           select: publicAchievementCredentialSelect,
         });
+
+        // const awardedCredentialWithStatus = await addCredentialStatus(
+        //   awardedCredentialWithId,
+        // );
+
+        // console.log("Cred with status:", awardedCredentialWithStatus);
+
+        // return prisma.achievementCredential.update({
+        //   where: { docId },
+        //   data: {
+        //     credentialStatus: {
+        //       id: awardedCredentialWithStatus.docId,
+        //       type: awardedCredentialWithStatus._type,
+        //     },
+        //   },
+        //   select: publicAchievementCredentialStatusSelect,
+        // });
       });
     }),
 });

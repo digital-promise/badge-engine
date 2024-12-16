@@ -9,5 +9,8 @@ export const imageSchema = z.object({
     .string()
     .default("Image")
     .refine((t) => t === "Image", { message: "Image" }),
-  caption: z.string().nullish(),
+  caption: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
 });

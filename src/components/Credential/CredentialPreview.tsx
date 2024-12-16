@@ -8,8 +8,8 @@ import { PreviewCredentialSchema } from "~/server/api/schemas/credential.schema"
 import { useAchievementStore } from "~/providers/achievement-form-provider";
 import Credential from "./Credential";
 import { useIssuerContext } from "~/providers/issuer-provider";
-import { useNotifications } from "~/providers/notifications";
 import ConfirmAndCreate from "./ConfirmAndCreate";
+import { useNotifications } from "~/providers/notification-provider";
 
 export default function CredentialPreview() {
   const { docId: issuerId } = useIssuerContext();

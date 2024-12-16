@@ -12,13 +12,14 @@ const POST = async function POST(
 
   if (authorization) {
     try {
-      const achievementCredential = await api.award.find.query(
+      const { context, ...rest } = await api.award.find.query(
         achievementCredentialId,
       );
 
       const signedCredential = await api.signing.createProof.mutate({
-        ...achievementCredential,
-        type: ["VerifiableCredential", ...achievementCredential.type],
+        context: context.length >= 2 ? context : undefined,
+        ...rest,
+        type: ["VerifiableCredential", ...rest.type],
       });
 
       return NextResponse.json(signedCredential);

@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { submitCredential } from "~/lib/submit";
 import { useAchievementStore } from "~/providers/achievement-form-provider";
 import { useIssuerContext } from "~/providers/issuer-provider";
-import { useNotifications } from "~/providers/notifications";
 import { useState } from "react";
+import { useNotifications } from "~/providers/notification-provider";
 
 export default function ConfirmAndCreate({
   className,

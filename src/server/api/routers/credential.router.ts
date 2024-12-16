@@ -127,27 +127,37 @@ export const credentialRouter = createTRPCRouter({
             }),
         } satisfies Prisma.ResultDescriptionCreateNestedManyWithoutAchievementInput;
 
-        const newAchievement = await ctx.prismaConnect.$transaction(
-          async (prisma) => {
-            const { docId } = await prisma.achievement.create({
-              data: {
-                ...data,
-                id: uuidUri(), // Required
-                type: ["Achievement"],
-                creator: { connect: { docId: issuer } },
-                image: { connect: { docId: image.docId } },
-                criteria: createCriteriaQuery,
-                resultDescription: createResultDescriptionQuery,
-                extensions: {},
-              },
-              select: { docId: true },
-            });
+        const { docId, criteria: docCriteria } =
+          await ctx.prismaConnect.achievement.create({
+            data: {
+              ...data,
+              id: uuidUri(), // Required
+              type: ["Achievement"],
+              creator: { connect: { docId: issuer } },
+              image: { connect: { docId: image.docId } },
+              criteria: createCriteriaQuery,
+              resultDescription: createResultDescriptionQuery,
+              extensions: {},
+            },
+            select: { docId: true, criteria: true },
+          });
 
-            const achievementWithUri = await prisma.achievement.update({
-              where: { docId },
+        const newAchievement = await ctx.prismaConnect.$transaction(
+          async (tx) => {
+            const uri = `${env.NEXTAUTH_URL.replace(/\/$/, "")}/issuers/${issuer}/credentials/${docId}`;
+            const achievementWithUri = await tx.achievement.update({
               data: {
-                id: `${env.NEXTAUTH_URL}/issuers/${issuer}/credentials/${docId}`,
+                id: uri,
+                ...(!docCriteria.id
+                  ? {
+                      criteria: {
+                        ...docCriteria,
+                        id: uri + "#Criteria",
+                      },
+                    }
+                  : {}),
               },
+              where: { docId },
             });
 
             const extensions = {
@@ -169,7 +179,7 @@ export const credentialRouter = createTRPCRouter({
               },
             } satisfies Prisma.ExtensionsCreateInput;
 
-            await prisma.extensions.create({ data: extensions });
+            await tx.extensions.create({ data: extensions });
 
             return achievementWithUri;
           },

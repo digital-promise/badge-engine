@@ -51,7 +51,6 @@ proxy:
 tooling:
   pnpm:
     service: appserver
-
 events:
   post-start:
     - appserver: pm2 start "local-ssl-proxy --source 4444 --target 3000 --key /certs/cert.key --cert /certs/cert.crt" -s

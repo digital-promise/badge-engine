@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "~/server/auth";
 import Login from "~/components/login";
 import Logout from "~/components/logout";
-
 import badgeEngineByDigitalPromise from "public/alt-badge-engine-logo-color.svg";
 
 export default async function Welcome() {
@@ -21,7 +20,7 @@ export default async function Welcome() {
         />
 
         <div className="flex flex-col gap-2">
-          <h1 className="text-xl font-bold">Welcome to Badge Engine!</h1>
+          <h1 className="text-lg font-bold">Welcome to Badge Engine!</h1>
           {session === null && (
             <p>
               Please sign in to see what we&apos;ve got for the first release.

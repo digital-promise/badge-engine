@@ -4,7 +4,7 @@
 model Extensions {
     id            String      @id @default(auto()) @map("_id") @db.ObjectId
     achievementId String      @unique @db.ObjectId
-    achievement   Achievement @relation("AchievementToExtensions", fields: [achievementId], references: [docId])
+    achievement   Achievement @relation("AchievementToExtensions", fields: [achievementId], references: [docId], onDelete: Cascade)
 
     // Relation to AssessmentExtension; multiple extensions per achievement
     assessmentExtensions AssessmentExtension[] @relation(name: "ExtensionsToAssessmentExtensions")
@@ -21,7 +21,7 @@ model AssessmentExtension {
 
     // Model Relationships
     achievementId String      @db.ObjectId
-    achievement   Achievement @relation("AchievementToAssessmentExtensions", fields: [achievementId], references: [docId])
+    achievement   Achievement @relation("AchievementToAssessmentExtensions", fields: [achievementId], references: [docId], onDelete: Cascade)
     extensionsId  String      @db.ObjectId
-    extensions    Extensions  @relation("ExtensionsToAssessmentExtensions", fields: [extensionsId], references: [id])
+    extensions    Extensions  @relation("ExtensionsToAssessmentExtensions", fields: [extensionsId], references: [id], onDelete: Cascade)
 }

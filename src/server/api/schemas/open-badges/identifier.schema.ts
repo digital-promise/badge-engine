@@ -26,5 +26,8 @@ export const identityObjectSchema = z.object({
   hashed: z.boolean(),
   identityHash: z.string(),
   identityType: z.nativeEnum(IdentifierType),
-  salt: z.string().nullish(),
+  salt: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
 });

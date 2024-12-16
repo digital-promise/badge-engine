@@ -12,10 +12,22 @@ export const alignmentSchema = z.object({
       message: "One of the items MUST be the IRI 'Alignment'.",
     })
     .default(["Alignment"]),
-  targetCode: z.string().nullish(),
-  targetDescription: z.string().nullish(),
+  targetCode: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  targetDescription: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
   targetName: z.string(),
-  targetFramework: z.string().nullish(),
-  targetType: z.nativeEnum(AlignmentTargetType).nullish(),
+  targetFramework: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  targetType: z
+    .nativeEnum(AlignmentTargetType)
+    .nullish()
+    .transform((v) => v ?? undefined),
   targetUrl: z.string().url(),
 });

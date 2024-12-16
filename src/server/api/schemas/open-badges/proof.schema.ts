@@ -10,33 +10,72 @@ export const compactJwsSchema = z
  */
 export const proofSchema = z.object({
   type: z.string(),
-  created: isoStringFromDatetime(z.string().datetime()).nullish(),
-  cryptosuite: z.string().nullish(),
-  challenge: z.string().nullish(),
-  domain: z.string().nullish(),
-  nonce: z.string().nullish(),
-  proofPurpose: z.string().nullish(),
-  proofValue: z.string().nullish(),
-  verificationMethod: z.string().nullish(),
+  created: isoStringFromDatetime(
+    z
+      .string()
+      .datetime()
+      .nullish()
+      .transform((v) => v ?? undefined),
+  ),
+  cryptosuite: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  challenge: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  domain: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  nonce: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  proofPurpose: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  proofValue: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  verificationMethod: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
 });
 
 export type Proof = z.infer<typeof proofSchema>;
 
 export const dataIntegrityProofConfigSchema = z.object({
-  type: z.string().default("DataIntegrityProof"),
-  cryptosuite: z.string().default("eddsa-jcs-2022"),
+  type: z.literal("DataIntegrityProof"),
+  cryptosuite: z.literal("eddsa-rdfc-2022"),
   created: z.string().datetime(),
 });
 
 export const dataIntegrityProofSchema = dataIntegrityProofConfigSchema.extend({
-  challenge: z.string().nullish(),
-  domain: z.string().nullish(),
-  nonce: z.string().nullish(),
+  challenge: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  domain: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  nonce: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
   proofPurpose: z.string().default("assertionMethod"),
   proofValue: z
     .string()
     .min(88)
     .max(89)
     .regex(/^z[1-9A-HJ-NP-Za-km-z]+/),
-  verificationMethod: z.string().nullish(),
+  verificationMethod: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
 });

@@ -1,0 +1,10 @@
+# Create a .lando.local.yml file at the root of the project, copy the below information, and fill in with the appropriate values.
+  status:
+    overrides:
+      environment:
+        CRED_STATUS_SERVICE: github
+        CRED_STATUS_REPO_OWNER:
+        CRED_STATUS_REPO_NAME:
+        CRED_STATUS_META_REPO_NAME:
+        CRED_STATUS_ACCESS_TOKEN:
+        CRED_STATUS_DID_SEED: # did:key seed

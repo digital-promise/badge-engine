@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AchievementType, AssessmentPlacement } from "@prisma/client";
+import { AchievementType, AssessmentPlacement} from "@prisma/client";
 import { nonEmptyString } from "./functions";
 
 export const RubricCriterionLevelSchema = z.object({
@@ -37,6 +37,22 @@ export const ExtrasSectionSchema = z.object({
   resources: nonEmptyString().min(1, "Resources is required"),
 })
 
+export const AwardRecipientSchema = z.object({
+  name: nonEmptyString(),
+  email: z.string().email(),
+});
+
+export const AwardBasicsSectionSchema = z.object({
+  recipients: z.array(AwardRecipientSchema),
+});
+
+export const AwardExtrasSectionSchema = z.object({
+  // expirationType: z.nativeEnum(ExpirationType),
+  expirationDate: z.date(),
+  awardTime: z.date(),
+  narrative: nonEmptyString().optional(),
+});
+
 export type BasicsFormSection = z.infer<typeof BasicsSectionSchema>;
 
 export type ResultDescription = z.infer<typeof ResultDescriptionSchema>;
@@ -45,9 +61,19 @@ export type CriteriaFormSection = z.infer<typeof CriteriaSectionSchema>;
 
 export type ExtrasFormSection = z.infer<typeof ExtrasSectionSchema>;
 
+export type AwardBasicsSection = z.infer<typeof AwardBasicsSectionSchema>;
+
+export type AwardExtrasSection = z.infer<typeof AwardExtrasSectionSchema>;
+
+export type AwardRecipient = z.infer<typeof AwardRecipientSchema>;
+
 export const CredentialFormSchema = BasicsSectionSchema.merge(
   CriteriaSectionSchema,
 ).merge(ExtrasSectionSchema);
+
+export const AwardFormSchema = AwardBasicsSectionSchema.merge(
+  AwardExtrasSectionSchema,
+);
 
 const PartialAchievementForm = CredentialFormSchema.partial();
 
@@ -57,6 +83,10 @@ const PartialCriteria = CriteriaSectionSchema.partial();
 
 const PartialExtras = ExtrasSectionSchema.partial();
 
+const PartialAwardBasics = AwardBasicsSectionSchema.partial();
+
+const PartialAwardExtras = AwardExtrasSectionSchema.partial();
+
 export type PartialCredentialForm = z.infer<typeof PartialAchievementForm>;
 
 export type PartialBasicsSection = z.infer<typeof PartialBasics>;
@@ -64,3 +94,7 @@ export type PartialBasicsSection = z.infer<typeof PartialBasics>;
 export type PartialCriteriaSection = z.infer<typeof PartialCriteria>;
 
 export type PartialExtrasSection = z.infer<typeof PartialExtras>;
+
+export type PartialAwardBasicsSection = z.infer<typeof PartialAwardBasics>;
+
+export type PartialAwardExtrasSection = z.infer<typeof PartialAwardExtras>;
