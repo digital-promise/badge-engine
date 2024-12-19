@@ -18,7 +18,7 @@ declare module "jsonld-document-loader" {
 }
 
 declare module "bnid" {
-  export function generateSecretKeySeed(): string;
+  export function generateSecretKeySeed(): Promise<string>;
   export function decodeSecretKeySeed({
     secretKeySeed,
   }: {
@@ -60,7 +60,7 @@ declare module "@digitalbazaar/ed25519-multikey" {
     id: string;
     controller: string;
     publicKeyMultibase: string;
-    secretKeyMultibase?: string;
+    secretKeyMultibase: string;
     seed: string;
   };
 

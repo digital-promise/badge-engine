@@ -5,10 +5,7 @@
 await import("./src/env.mjs");
 
 /** @type {import("next").NextConfig} */
-const config = {
-    experimental: {
-        instrumentationHook: true, // Allows use of instrumentation - https://nextjs.org/docs/app/building-your-application/optimizing/instrumentation
-    },      
+const config = { 
     transpilePackages: ['@mdxeditor/editor'],
 };
 

@@ -3,10 +3,11 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { anyUrlPattern, uuidUri } from "~/util";
 import { CreateCredentialSchema } from "~/server/api/schemas/credential.schema";
 import { baseQuery } from "~/server/api/schemas/search-filter.schema";
-import { ResultType, QuestionType, type Prisma } from "@prisma/client";
+import { type Prisma, ResultType, QuestionType } from "@prisma/client";
 import { mongoDbObjectId } from "../schemas/util.schema";
 import { achievementComplete } from "~/server/db/queries";
 import { env } from "~/env.mjs";
+import { throwPrismaErrorAsTRPCError } from "~/lib/error";
 
 export const credentialRouter = createTRPCRouter({
   index: publicProcedure
@@ -201,13 +202,18 @@ export const credentialRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const credential = await ctx.prismaConnect.achievement.findUnique({
-        where: {
-          docId: input.docId,
-        },
-        include: achievementComplete,
-      });
+      try {
+        const credential =
+          await ctx.prismaConnect.achievement.findUniqueOrThrow({
+            where: {
+              docId: input.docId,
+            },
+            include: achievementComplete,
+          });
 
-      return credential;
+        return credential;
+      } catch (e) {
+        throwPrismaErrorAsTRPCError(e);
+      }
     }),
 });

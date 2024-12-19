@@ -23,10 +23,6 @@ type Proof = ProofConfig & {
 
 const rdfc10 = new RDFC10(n3.DataFactory);
 
-const { publicKeyMultibase, secretKeyMultibase } = await (
-  await getSigningKey()
-).export({ publicKey: true, secretKey: true });
-
 const toQuads = async (input: object) =>
   jsonld.toRDF(input, {
     format: "application/n-quads",
@@ -45,16 +41,20 @@ const transformAndHash = async (input: object) => {
   return hash(normalizedQuads);
 };
 
-const sign = (hexString: string) => {
-  const privateKey = base58btc.decode(secretKeyMultibase!).slice(2, 34);
-  return base58btc.encode(ed.sign(hexString, privateKey));
-};
-
 export const signingRouter = createTRPCRouter({
   createProof: protectedProcedure
     .input(createVerifiableAchievementCredentialSchema)
     .mutation(async ({ ctx, input }) => {
       const { docId, context, ...unsecuredCredential } = input;
+
+      const { publicKeyMultibase, secretKeyMultibase } = await (
+        await getSigningKey()
+      ).export({ publicKey: true, secretKey: true, seed: true });
+
+      const sign = (hexString: string) => {
+        const privateKey = base58btc.decode(secretKeyMultibase).slice(2, 34);
+        return base58btc.encode(ed.sign(hexString, privateKey));
+      };
 
       const credentialWithoutProof = {
         "@context": context,
@@ -108,8 +108,8 @@ export const signingRouter = createTRPCRouter({
 
       await ctx.prismaConnect.achievementCredential.update({
         data: { claimed: true },
-        where: { docId }
-      })
+        where: { docId },
+      });
 
       return signedCredential;
     }),
