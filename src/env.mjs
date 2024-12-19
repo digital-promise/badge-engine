@@ -36,11 +36,6 @@ export const env = createEnv({
     AUTH0_CLIENT_SECRET: z.string(),
     AUTH0_ISSUER: z.string().url(),
 
-    AWS_KMS_KEY_ID: z.string(),
-    AWS_REGION: z.string(),
-    AWS_ACCESS_KEY_ID: z.string(),
-    AWS_SECRET_ACCESS_KEY: z.string(),
-
     STATUS_SERVICE_URL: z.string().optional(),
     STATUS_LIST_URL: z.string().url().optional(),
     STATUS_LIST_ID: z.string().optional(),
@@ -67,10 +62,6 @@ export const env = createEnv({
     AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
     AUTH0_CLIENT_SECRET: process.env.AUTH0_CLIENT_SECRET,
     AUTH0_ISSUER: process.env.AUTH0_ISSUER,
-    AWS_REGION: process.env.AWS_REGION,
-    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
-    AWS_KMS_KEY_ID: process.env.AWS_KMS_KEY_ID,
     STATUS_SERVICE_URL: process.env.STATUS_SERVICE_URL,
     STATUS_LIST_URL: process.env.STATUS_LIST_URL,
     STATUS_LIST_ID: process.env.STATUS_LIST_ID,
