@@ -1,28 +1,45 @@
 import { z } from "zod";
-import {
-  compactJwsSchema,
-  proofSchema,
-} from "./proof.schema";
+import { compactJwsSchema, proofSchema } from "./proof.schema";
 import { profileRefSchema } from "./profile.schema";
 import { achievementSubjectSchema } from "./achievement.schema";
 import { imageSchema } from "./image.schema";
+import { mongoDbObjectId } from "../util.schema";
 
 /**
  * @link https://www.imsglobal.org/spec/ob/v3p0/#endorsementsubject
  */
 export const evidenceSchema = z.object({
-  id: z.string().url().nullish(),
+  id: z
+    .string()
+    .url()
+    .nullish()
+    .transform((v) => v ?? undefined),
   type: z
     .array(z.string())
     .min(1)
     .refine((t) => t.includes("Evidence"), {
       message: "One of the items MUST be the IRI 'Evidence'.",
     }),
-  narrative: z.string().nullish(),
-  name: z.string().nullish(),
-  description: z.string().nullish(),
-  genre: z.string().nullish(),
-  audience: z.string().nullish(),
+  narrative: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  name: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  description: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  genre: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  audience: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
 });
 
 /**
@@ -51,7 +68,10 @@ export const credentialStatusSchema = z.object({
  * @link https://www.imsglobal.org/spec/ob/v3p0/#credentialsubject
  */
 export const credentialSubjectSchema = z.object({
-  id: z.string().nullish(),
+  id: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
 });
 
 /**
@@ -66,7 +86,10 @@ export const refreshServiceSchema = z.object({
  * @link https://www.imsglobal.org/spec/ob/v3p0/#termsofuse
  */
 export const termsOfUseSchema = z.object({
-  id: z.string().nullish(),
+  id: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
   type: z.string(),
 });
 
@@ -82,23 +105,43 @@ export const endorsementSubjectSchema = z.object({
       message: "One of the items MUST be the URI 'EndorsementSubject'.",
     })
     .default(["EndorsementSubject"]),
-  endorsementComment: z.string().nullish(),
+  endorsementComment: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
 });
 
 const baseCredentialSchema = z.object({
   credentialSubject: credentialSubjectSchema,
   issuer: profileRefSchema,
   validFrom: z.string().datetime(),
-  validUntil: z.string().datetime().nullish(),
-  proof: z.array(proofSchema).nullish(),
-  credentialSchema: z.array(credentialSchemaSchema).nullish(),
-  credentialStatus: credentialStatusSchema.nullish(),
-  refreshService: refreshServiceSchema.nullish(),
-  termsOfUse: z.array(termsOfUseSchema).nullish(),
+  validUntil: z
+    .string()
+    .datetime()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  proof: z
+    .array(proofSchema)
+    .nullish()
+    .transform((v) => v ?? undefined),
+  credentialSchema: z
+    .array(credentialSchemaSchema)
+    .nullish()
+    .transform((v) => v ?? undefined),
+  credentialStatus: credentialStatusSchema
+    .nullish()
+    .transform((v) => v ?? undefined),
+  refreshService: refreshServiceSchema
+    .nullish()
+    .transform((v) => v ?? undefined),
+  termsOfUse: z
+    .array(termsOfUseSchema)
+    .nullish()
+    .transform((v) => v ?? undefined),
 });
 
 const baseEndorsementSchema = baseCredentialSchema.extend({
-  "@context": z
+  context: z
     .array(z.string().url())
     .min(2)
     .refine(
@@ -143,9 +186,16 @@ const baseEndorsementSchema = baseCredentialSchema.extend({
     .default(["VerifiableCredential", "EndorsementCredential"]),
   id: z.string(),
   name: z.string(),
-  description: z.string().nullish(),
+  description: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
   credentialSubject: endorsementSubjectSchema,
-  awardedDate: z.string().datetime().nullish(),
+  awardedDate: z
+    .string()
+    .datetime()
+    .nullish()
+    .transform((v) => v ?? undefined),
 });
 
 export type EndorsementCredential = z.input<typeof baseEndorsementSchema> & {
@@ -161,7 +211,7 @@ export const endorsementCredentialSchema: z.ZodType<EndorsementCredential> =
  * @link https://www.imsglobal.org/spec/ob/v3p0/#verifiablecredential
  */
 export const verifiableCredentialSchema = baseCredentialSchema.extend({
-  "@context": z
+  context: z
     .array(z.string())
     .min(1)
     .refine((c) => c.at(0) === "https://www.w3.org/ns/credentials/v2", {
@@ -180,9 +230,13 @@ export const verifiableCredentialSchema = baseCredentialSchema.extend({
  * @link https://www.imsglobal.org/spec/ob/v3p0/#achievementcredential
  */
 export const achievementCredentialSchema = verifiableCredentialSchema.extend({
-  "@context": z
+  context: z
     .array(z.string().url())
     .min(2)
+    .default([
+      "https://www.w3.org/ns/credentials/v2",
+      "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+    ])
     .refine(
       (c) => {
         const [head] = c;
@@ -205,11 +259,7 @@ export const achievementCredentialSchema = verifiableCredentialSchema.extend({
         message:
           "The second item in @context must be a URI with the value 'https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json'",
       },
-    )
-    .default([
-      "https://www.w3.org/ns/credentials/v2",
-      "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
-    ]),
+    ),
   id: z.string(),
   type: z
     .array(z.string())
@@ -232,29 +282,47 @@ export const achievementCredentialSchema = verifiableCredentialSchema.extend({
       "AchievementCredential",
       "OpenBadgeCredential",
     ]),
-  name: z.string().nullish(),
-  description: z.string().nullish(),
-  image: imageSchema.nullish(),
-  awardedDate: z.string().datetime().nullish(),
+  name: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  description: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? undefined),
+  image: imageSchema.nullish().transform((v) => v ?? undefined),
+  awardedDate: z
+    .string()
+    .datetime()
+    .nullish()
+    .transform((v) => v ?? undefined),
   credentialSubject: achievementSubjectSchema,
-  endorsement: z.array(endorsementCredentialSchema).nullish(),
-  endorsementJwt: z.array(compactJwsSchema).nullish(),
-  evidence: z.array(evidenceSchema).nullish(),
+  endorsement: z
+    .array(endorsementCredentialSchema)
+    .nullish()
+    .transform((v) => v ?? undefined),
+  endorsementJwt: z
+    .array(compactJwsSchema)
+    .nullish()
+    .transform((v) => v ?? undefined),
+  evidence: z
+    .array(evidenceSchema)
+    .nullish()
+    .transform((v) => v ?? undefined),
 });
 
 export const createVerifiableAchievementCredentialSchema =
-  achievementCredentialSchema
-    .extend({
-      type: z
-        .array(z.string())
-        .refine(
-          (t) =>
-            t.includes("AchievementCredential") ||
-            t.includes("OpenBadgeCredential"),
-          {
-            message:
-              "One of the items in type MUST be the IRI 'AchievementCredential' or 'OpenBadgeCredential'",
-          },
-        ),
-    })
-    .omit({ proof: true });
+  achievementCredentialSchema.extend({
+    docId: mongoDbObjectId,
+    type: z
+      .array(z.string())
+      .refine(
+        (t) =>
+          t.includes("AchievementCredential") ||
+          t.includes("OpenBadgeCredential"),
+        {
+          message:
+            "One of the items in type MUST be the IRI 'AchievementCredential' or 'OpenBadgeCredential'",
+        },
+      ),
+  });

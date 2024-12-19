@@ -8,16 +8,14 @@ export interface ListInputProps {
   defaultValue?: string[];
 }
 
-export default function ListInput(
-  { onChange, defaultValue }: ListInputProps
-) {
+export default function ListInput({ onChange, defaultValue }: ListInputProps) {
   const [items, setItems] = useState(new Set(defaultValue));
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const handleChange = useCallback(() => onChange(Array.from(items)), [items, onChange])
 
-  useEffect(() => {
-    return () => handleChange()
-  }, [handleChange])
+  const handleUpdate = (items: Set<string>) => {
+    onChange(Array.from(items));
+    setItems(new Set(items));
+  };
 
   const addItems = () => {
     if (inputRef.current) {
@@ -25,14 +23,14 @@ export default function ListInput(
       for (const value of values) {
         if (value) items.add(value);
       }
-      setItems(new Set(items));
+      handleUpdate(items);
       inputRef.current.value = "";
     }
   };
 
   const removeItem = (item: string) => {
     if (items.delete(item)) {
-      setItems(new Set(items));
+      handleUpdate(items);
     }
   };
 
@@ -76,4 +74,4 @@ export default function ListInput(
       </ul>
     </>
   );
-};
+}

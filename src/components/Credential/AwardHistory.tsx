@@ -72,14 +72,12 @@ const AwardListItem = ({ award }: { award: IAwardHistory[number] }) => {
       </td>
 
       <td className="px-3 py-4">
-        {
-          <p
-            data-status="pending"
-            className="font-semibold before:mr-2 before:content-['\2022'] data-[status=pending]:text-gray-4"
-          >
-            Awaiting Claim
-          </p>
-        }
+        <p
+          data-status={award.claimed ? "claimed" : "pending"}
+          className="font-semibold before:mr-2 before:content-['\2022'] data-[status=claimed]:text-green-5 data-[status=pending]:text-gray-4"
+        >
+          {award.claimed ? "Claimed" : "Awaiting Claim"}
+        </p>
       </td>
 
       <td className="px-3 py-4">

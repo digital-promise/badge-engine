@@ -9,9 +9,9 @@ model IdentifierEntry {
     identifierType IdentifierType
 
     // Model relationships
-    Profile       Profile      @relation(fields: [profileId], references: [docId])
+    Profile       Profile      @relation(fields: [profileId], references: [docId], onDelete: Cascade)
     profileId     String       @db.ObjectId
-    Achievement   Achievement? @relation(fields: [achievementId], references: [docId], name: "achievement")
+    Achievement   Achievement? @relation(fields: [achievementId], references: [docId], name: "achievement", onDelete: Cascade)
     achievementId String?      @db.ObjectId
 }
 

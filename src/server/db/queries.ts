@@ -32,6 +32,11 @@ export const publicAchievementCredentialSelect = {
   credentialSubject: { select: publicAchievementSubjectSelect },
 } satisfies Prisma.AchievementCredentialSelect;
 
+export const publicAchievementCredentialStatusSelect = {
+  ...publicAchievementCredentialSelect,
+  credentialStatus: true,
+};
+
 export const endorsementCredentialComplete = {
   credentialSubject: true,
   issuer: true,

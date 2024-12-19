@@ -1,5 +1,29 @@
-declare module "base58-universal" {
-  function encode(data: Uint8Array): string;
+declare module "jsonld-document-loader" {
+  import type { ContextDefinition, RemoteDocument } from "jsonld";
+
+  export type ContextDocuments = Map<
+    string,
+    Record<"@context", ContextDefinition>
+  >;
+
+  type documentLoader = (
+    url: string,
+    callback: (err: Error, remoteDoc: RemoteDocument) => void,
+  ) => Promise<RemoteDocument>;
+
+  export class JsonLdDocumentLoader {
+    addDocuments({ documents }: { documents: ContextDocuments }): void;
+    build(): documentLoader;
+  }
+}
+
+declare module "bnid" {
+  export function generateSecretKeySeed(): Promise<string>;
+  export function decodeSecretKeySeed({
+    secretKeySeed,
+  }: {
+    secretKeySeed: string;
+  }): Uint8Array;
 }
 
 declare module "@digitalbazaar/ed25519-multikey" {
@@ -11,7 +35,7 @@ declare module "@digitalbazaar/ed25519-multikey" {
     }?: {
       id?: string;
       controller?: string;
-      seed?: string;
+      seed?: Uint8Array;
     }) => Promise<KeyPair>;
 
     from: (key: object) => KeyPair;
@@ -20,13 +44,15 @@ declare module "@digitalbazaar/ed25519-multikey" {
   interface KeyPair {
     export: (args: KeyPairExportArgs) => Promise<Multikey>;
     signer: () => {
-      sign: ({ data }: { data: Uint8Array }) => Promise<Uint8Array>;
+      sign: ({ data }: { data: NodeJS.ArrayBufferView }) => Promise<Buffer>;
     };
   }
 
   type KeyPairExportArgs = {
-    publicKey: boolean;
+    publicKey?: boolean;
     secretKey?: boolean;
+    includeContext?: boolean;
+    seed?: boolean;
   };
 
   type Multikey = {
@@ -34,7 +60,8 @@ declare module "@digitalbazaar/ed25519-multikey" {
     id: string;
     controller: string;
     publicKeyMultibase: string;
-    secretKeyMultibase?: string;
+    secretKeyMultibase: string;
+    seed: string;
   };
 
   const multikey: Ed25519Multikey;

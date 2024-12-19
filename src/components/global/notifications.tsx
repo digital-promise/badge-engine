@@ -1,6 +1,6 @@
 "use client";
 
-import { useNotifications } from "~/providers/notifications";
+import { useNotifications } from "~/providers/notification-provider";
 
 export function Notifications() {
   const { notifications } = useNotifications();

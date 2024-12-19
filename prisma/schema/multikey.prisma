@@ -1,6 +1,6 @@
 model Multikey {
-    docId              String @id @default(auto()) @map("_id") @db.ObjectId
-    id                 String @unique
+    docId              String  @id @default(auto()) @map("_id") @db.ObjectId
+    id                 String  @unique
     publicKeyMultibase String
-    secretKeyMultibase String
+    seed               String? // This is the encoded seed and needs to be decoded for use in env vars
 }

@@ -3,10 +3,11 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { anyUrlPattern, uuidUri } from "~/util";
 import { CreateCredentialSchema } from "~/server/api/schemas/credential.schema";
 import { baseQuery } from "~/server/api/schemas/search-filter.schema";
-import { ResultType, QuestionType, type Prisma } from "@prisma/client";
+import { type Prisma, ResultType, QuestionType } from "@prisma/client";
 import { mongoDbObjectId } from "../schemas/util.schema";
 import { achievementComplete } from "~/server/db/queries";
 import { env } from "~/env.mjs";
+import { throwPrismaErrorAsTRPCError } from "~/lib/error";
 
 export const credentialRouter = createTRPCRouter({
   index: publicProcedure
@@ -127,27 +128,37 @@ export const credentialRouter = createTRPCRouter({
             }),
         } satisfies Prisma.ResultDescriptionCreateNestedManyWithoutAchievementInput;
 
-        const newAchievement = await ctx.prismaConnect.$transaction(
-          async (prisma) => {
-            const { docId } = await prisma.achievement.create({
-              data: {
-                ...data,
-                id: uuidUri(), // Required
-                type: ["Achievement"],
-                creator: { connect: { docId: issuer } },
-                image: { connect: { docId: image.docId } },
-                criteria: createCriteriaQuery,
-                resultDescription: createResultDescriptionQuery,
-                extensions: {},
-              },
-              select: { docId: true },
-            });
+        const { docId, criteria: docCriteria } =
+          await ctx.prismaConnect.achievement.create({
+            data: {
+              ...data,
+              id: uuidUri(), // Required
+              type: ["Achievement"],
+              creator: { connect: { docId: issuer } },
+              image: { connect: { docId: image.docId } },
+              criteria: createCriteriaQuery,
+              resultDescription: createResultDescriptionQuery,
+              extensions: {},
+            },
+            select: { docId: true, criteria: true },
+          });
 
-            const achievementWithUri = await prisma.achievement.update({
-              where: { docId },
+        const newAchievement = await ctx.prismaConnect.$transaction(
+          async (tx) => {
+            const uri = `${env.NEXTAUTH_URL.replace(/\/$/, "")}/issuers/${issuer}/credentials/${docId}`;
+            const achievementWithUri = await tx.achievement.update({
               data: {
-                id: `${env.NEXTAUTH_URL}/issuers/${issuer}/credentials/${docId}`,
+                id: uri,
+                ...(!docCriteria.id
+                  ? {
+                      criteria: {
+                        ...docCriteria,
+                        id: uri + "#Criteria",
+                      },
+                    }
+                  : {}),
               },
+              where: { docId },
             });
 
             const extensions = {
@@ -169,7 +180,7 @@ export const credentialRouter = createTRPCRouter({
               },
             } satisfies Prisma.ExtensionsCreateInput;
 
-            await prisma.extensions.create({ data: extensions });
+            await tx.extensions.create({ data: extensions });
 
             return achievementWithUri;
           },
@@ -191,13 +202,18 @@ export const credentialRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const credential = await ctx.prismaConnect.achievement.findUnique({
-        where: {
-          docId: input.docId,
-        },
-        include: achievementComplete,
-      });
+      try {
+        const credential =
+          await ctx.prismaConnect.achievement.findUniqueOrThrow({
+            where: {
+              docId: input.docId,
+            },
+            include: achievementComplete,
+          });
 
-      return credential;
+        return credential;
+      } catch (e) {
+        throwPrismaErrorAsTRPCError(e);
+      }
     }),
 });

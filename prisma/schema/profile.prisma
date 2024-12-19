@@ -2,7 +2,7 @@
 // Issuers must be represented as Profiles, and endorsers, or other entities may also be represented using this vocabulary. 
 // Each Profile that represents an Issuer may be referenced in many BadgeClasses that it has defined. Anyone can create and host an Issuer file to start issuing Open Badges. Issuers may also serve as recipients of Open Badges, often identified within an Assertion by specific properties, like their url or contact email address.
 model Profile {
-    docId                   String                  @id @default(auto()) @map("_id") @db.ObjectId
+    docId                String                  @id @default(auto()) @map("_id") @db.ObjectId
     // 'createdAt' = extends Profile for internal use.
     createdAt            DateTime                @default(now())
     // 'updatedAt' = extends Profile for internal use.
@@ -20,7 +20,7 @@ model Profile {
     // `agreedTermsVersion` = extends Profile for internal use.  Allows us to know ehich version of the terms the Issuer agreed to so they can prompted when terms have been updated.
     agreedTermsVersion   String?
     // Unique URI for the Issuer/Profile file. [1]
-    id                  String                  @unique
+    id                   String                  @unique
     // 	The value of the 'type' property MUST be an unordered set. One of the items MUST be the IRI 'Profile'. [1..*]
     type                 String[]
     // 'name' = The name of the entity or organization. [0..1]
@@ -37,7 +37,7 @@ model Profile {
     // 'endorsementJwt' = A String in Compact JWS format.
     endorsementJwt       String[] // optional
     // 'image' = An image representing the issuer. This must be a PNG or SVG image. [0..1]
-    image                Image?                  @relation(fields: [imageId], references: [docId])
+    image                Image?                  @relation(fields: [imageId], references: [docId], onDelete: Cascade)
     imageId              String?                 @db.ObjectId
     // 'email' = A NormalizedString representing an email address. [0..1]
     email                String?
@@ -46,7 +46,7 @@ model Profile {
     // 'revieveNotifications' = extends Profile for internal use
     receiveNotifications Boolean?
     // 'address' = 	An address for the individual or organization. [0..1]
-    address              Address?                @relation(fields: [addressId], references: [id])
+    address              Address?                @relation(fields: [addressId], references: [id], onDelete: Cascade)
     addressId            String?                 @db.ObjectId
     // 'otherIdentifier' = A list of identifiers for the described entity. [0..*]
     otherIdentifier      IdentifierEntry[] // optional
@@ -103,7 +103,7 @@ model Address {
     // 'postalCode' = A postal code. [0..1]
     postalCode          String?
     // 'geo' = The geographic coordinates of the location. [0..1]
-    geo                 GeoCoordinates? @relation(fields: [geoId], references: [id])
+    geo                 GeoCoordinates? @relation(fields: [geoId], references: [id], onDelete: Cascade)
     geoId               String?         @db.ObjectId
 
     // Model relationships

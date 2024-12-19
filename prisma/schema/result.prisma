@@ -1,39 +1,39 @@
 // https://www.imsglobal.org/spec/ob/v3p0/#resultdescription
 // Describes a possible achievement result.
 model ResultDescription {
-    docId                       String                 @id @default(auto()) @map("_id") @db.ObjectId
+    docId                String                 @id @default(auto()) @map("_id") @db.ObjectId
     // The unique URI for this result description. Required so a result can link to this result description.	[1]
-    id                      String
+    id                   String
     // 'type' = The value of the type property MUST be an unordered set. One of the items MUST be the IRI 'ResultDescription'.	[1..*]
-    type                     String[]
+    type                 String[]
     // 'alignment' = Alignments between this result description and nodes in external frameworks.	[0..*]
-    alignment                Alignment[]            @relation("resultDescription") // optional
-    alignmentIds             String[]               @db.ObjectId
+    alignment            Alignment[]            @relation("resultDescription") // optional
+    alignmentIds         String[]               @db.ObjectId
     // 'allowedValue' = An ordered list of allowed values. The values should be ordered from low to high as determined by the achievement creator.	[0..*]
-    allowedValue             String[] //optional
+    allowedValue         String[] //optional
     // 'name' = The name of the result.	[1]
-    name                     String
+    name                 String
     // 'requiredLevel' = The id of the rubric criterion level required to pass as determined by the achievement creator.	[0..1]
-    requiredLevel            String?
+    requiredLevel        String?
     // 'requiredValue' = A value from allowedValue or within the range of valueMin to valueMax required to pass as determined by the achievement creator.	[0..1]
-    requiredValue            String?
+    requiredValue        String?
     // 'resultType'	 = The type of result this description represents. This is an extensible enumerated vocabulary.	[1]
-    resultType               ResultType
+    resultType           ResultType
     // 'rubricCriterionLevel' = An ordered array of rubric criterion levels that may be asserted in the linked result. The levels should be ordered from low to high as determined by the achievement creator.	[0..*]
-    rubricCriterionLevel     RubricCriterionLevel[] @relation("resultDescription") //optional
+    rubricCriterionLevel RubricCriterionLevel[] @relation("resultDescription") //optional
     // 'valueMax' = The maximum possible value that may be asserted in a linked result.	[0..1]
-    valueMax                 String?
+    valueMax             String?
     // 'valueMin' = The minimum possible value that may be asserted in a linked result.	[0..1]
-    valueMin                 String?
+    valueMin             String?
     // questionType is for internal use only and should be removed upon issuance. [1]
     // *NOTE* this is optional in the schema for now but should be made required when this field is implemented in the code
-    questionType             QuestionType
+    questionType         QuestionType
 
     // uiPlacement is for internal use and not a formal model extension
     uiPlacement AssessmentPlacement
 
     // Model relationships
-    Achievement   Achievement @relation(fields: [achievementId], references: [docId])
+    Achievement   Achievement @relation(fields: [achievementId], references: [docId], onDelete: Cascade)
     achievementId String      @db.ObjectId
 
     // *NOTE: This class can be extended with additional properties.
@@ -58,24 +58,24 @@ enum ResultType {
 // https://www.imsglobal.org/spec/ob/v3p0/#rubriccriterionlevel'
 // Describes a rubric criterion level.
 model RubricCriterionLevel {
-    docId                          String      @id @default(auto()) @map("_id") @db.ObjectId
+    docId       String      @id @default(auto()) @map("_id") @db.ObjectId
     // The unique URI for this rubric criterion level. Required so a result can link to this rubric criterion level.	[1]
-    id                         String
+    id          String
     // 'type' = The value of the type property MUST be an unordered set. One of the items MUST be the IRI 'RubricCriterionLevel'.	[1..*]
-    type                        String[]
+    type        String[]
     // 'alignment' = Alignments between this rubric criterion level and a rubric criterion levels defined in external frameworks.	[0..*]
-    alignment                   Alignment[] @relation("rubricCriterionLevel") //optional
+    alignment   Alignment[] @relation("rubricCriterionLevel") //optional
     // 'description = Description of the rubric criterion level.	[0..1]
-    description                 String?
+    description String?
     // 'level' = The rubric performance level in terms of success.	[0..1]
-    level                       String?
+    level       String?
     // 'name' = The name of the rubric criterion level.	[1]
-    name                        String
+    name        String
     // 'points' = The points associated with this rubric criterion level.	[0..1]
-    points                      String?
+    points      String?
 
     // Model relationships
-    ResultDescription   ResultDescription? @relation(fields: [resultDescriptionId], references: [docId], name: "resultDescription")
+    ResultDescription   ResultDescription? @relation(fields: [resultDescriptionId], references: [docId], name: "resultDescription", onDelete: Cascade)
     resultDescriptionId String?            @db.ObjectId
 
     // *NOTE: This class can be extended with additional properties.

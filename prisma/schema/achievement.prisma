@@ -1,9 +1,9 @@
 // https://www.imsglobal.org/spec/ob/v3p0#achievement
 // A collection of information about the accomplishment recognized by the Assertion. Many assertions may be created corresponding to one Achievement.
 model Achievement {
-    docId                    String                  @id @default(auto()) @map("_id") @db.ObjectId
+    docId                 String                  @id @default(auto()) @map("_id") @db.ObjectId
     // Unique URI for the Achievement. [1] Required but marked optional as it gets added after creation.
-    id                   String                  @unique
+    id                    String                  @unique
     // 'type' property is an IRI
     // A NormalizedString that represents an Internationalized Resource Identifier (IRI), which extends the ASCII characters subset of the Uniform Resource Identifier (URI). [1..*]
     // "type": ["Achievement", "ResearchAndRationale", "Resources"]
@@ -13,9 +13,8 @@ model Achievement {
     alignmentIds          String[]                @db.ObjectId
     // 'achievementType' = The type of achievement. This is an extensible vocabulary. [0..1]
     achievementType       AchievementType?
-    // 'creator' = The person or organization that created the achievement definition. [0..1]
     createdAt             DateTime                @default(now())
-    creator               Profile?                @relation(fields: [creatorId], references: [docId])
+    creator               Profile?                @relation(fields: [creatorId], references: [docId], onDelete: Cascade)
     creatorId             String?                 @db.ObjectId
     // 'creditsAvailable' = Credit hours associated with this entity, or credit hours possible. For example 3.0. [0..1]
     creditsAvailable      Float?
@@ -34,7 +33,7 @@ model Achievement {
     // 'humanCode' = The code, generally human readable, associated with an achievement. [0..1]
     humanCode             String?
     // 'image' = An image representing the achievement. [0..1]
-    image                 Image?                  @relation(fields: [imageId], references: [docId])
+    image                 Image?                  @relation(fields: [imageId], references: [docId], onDelete: Cascade)
     imageId               String?                 @db.ObjectId
     // 'inLanguage' = The language of the achievement. [0..1]
     inLanguage            String? // could be enum
@@ -72,9 +71,9 @@ model Achievement {
 // https://www.imsglobal.org/spec/ob/v3p0/#related
 // Identifies a related achievement.
 model Related {
-    docId         String   @id @default(auto()) @map("_id") @db.ObjectId
+    docId      String   @id @default(auto()) @map("_id") @db.ObjectId
     // The related achievement. [1]
-    id        String
+    id         String
     // 'type' = The value of the type property MUST be an unordered set. One of the items MUST be the IRI 'Related'.	[1..*]
     type       String[]
     // 'inLanguage' = The language of the related achievement.	[0..1]
@@ -83,7 +82,7 @@ model Related {
     version    String?
 
     // Model relationships
-    Achievement   Achievement? @relation(fields: [achievementId], references: [docId], name: "achievement")
+    Achievement   Achievement? @relation(fields: [achievementId], references: [docId], name: "achievement", onDelete: Cascade)
     achievementId String?      @db.ObjectId
 
     // *NOTE: This class can be extended with additional properties.

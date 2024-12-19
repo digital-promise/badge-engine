@@ -1,74 +1,116 @@
-import { createHash } from "crypto";
-import { encode } from "base58-universal";
-import { getOrCreateKey } from "~/lib/get-or-create-key";
+import jsonld from "jsonld";
+import n3 from "n3";
+import { RDFC10, type Quads, type InputQuads } from "rdfjs-c14n";
+import { ed25519 as ed } from "@noble/curves/ed25519";
+import { base58btc } from "multiformats/bases/base58";
+import documentLoader from "~/lib/document-loader";
+import { getSigningKey } from "~/lib/get-signing-key";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import {
-  dataIntegrityProofConfigSchema,
-  dataIntegrityProofSchema,
-} from "../schemas/open-badges/proof.schema";
-import {
-  createVerifiableAchievementCredentialSchema,
-  achievementCredentialSchema,
-} from "../schemas/open-badges/credential.schema";
+import { createVerifiableAchievementCredentialSchema } from "~/server/api/schemas/open-badges/credential.schema";
+
+type ProofConfig = {
+  type: "DataIntegrityProof";
+  cryptosuite: "eddsa-rdfc-2022";
+  created: string;
+  verificationMethod: string;
+  proofPurpose: "assertionMethod";
+  "@context"?: string[];
+};
+
+type Proof = ProofConfig & {
+  proofValue: string;
+};
+
+const rdfc10 = new RDFC10(n3.DataFactory);
+
+const toQuads = async (input: object) =>
+  jsonld.toRDF(input, {
+    format: "application/n-quads",
+    documentLoader,
+  }) as unknown as InputQuads;
+
+const normalize = async (input: InputQuads) =>
+  (await rdfc10.c14n(input)).canonicalized_dataset;
+
+const hash = async (input: Quads) => rdfc10.hash(input);
+
+const transformAndHash = async (input: object) => {
+  const quads = await toQuads(input);
+  const normalizedQuads = await normalize(quads);
+
+  return hash(normalizedQuads);
+};
 
 export const signingRouter = createTRPCRouter({
   createProof: protectedProcedure
     .input(createVerifiableAchievementCredentialSchema)
-    .mutation(async ({ input }) => {
-      const keypair = await getOrCreateKey();
+    .mutation(async ({ ctx, input }) => {
+      const { docId, context, ...unsecuredCredential } = input;
 
-      const { sign } = keypair.signer();
+      const { publicKeyMultibase, secretKeyMultibase } = await (
+        await getSigningKey()
+      ).export({ publicKey: true, secretKey: true, seed: true });
+
+      const sign = (hexString: string) => {
+        const privateKey = base58btc.decode(secretKeyMultibase).slice(2, 34);
+        return base58btc.encode(ed.sign(hexString, privateKey));
+      };
+
+      const credentialWithoutProof = {
+        "@context": context,
+        ...unsecuredCredential,
+      };
+
+      const verificationMethod = `did:key:${publicKeyMultibase}`;
 
       /**
        * @link https://www.w3.org/TR/vc-di-eddsa/#proof-configuration-eddsa-jcs-2022
        */
-      const options = dataIntegrityProofConfigSchema.parse({
+      const proof: ProofConfig = {
+        type: "DataIntegrityProof",
+        cryptosuite: "eddsa-rdfc-2022",
         created: new Date().toISOString(),
-      });
+        verificationMethod,
+        proofPurpose: "assertionMethod",
+        "@context": context,
+      };
 
       /**
-       * Create an eddsa-jcs-2022 proof
+       * Create an eddsa-rdfc-2022 proof
        *
-       * Canonicalizes the proof config and credential document by creating a hashable serialization of each document (JSON.stringify()), hashes the data by applying SHA-256, and concatenates the two buffers.
+       * Canonicalizes the proof config and credential document by creating a hashable serialization of each document, hashes the data by applying SHA-256, and concatenates the two buffers.
        *
-       * @link https://www.w3.org/TR/vc-di-eddsa/#create-proof-eddsa-jcs-2022
+       * @link https://www.w3.org/TR/vc-di-eddsa/#eddsa-rdfc-2022
        */
-      const data = Buffer.concat(
-        [options, input].map((document) =>
-          createHash("sha256", { outputLength: 32 })
-            .update(JSON.stringify(document))
-            .digest(),
-        ),
-      );
+      const proofHex = (
+        await Promise.all(
+          [proof, credentialWithoutProof].map((i) => transformAndHash(i)),
+        )
+      ).join("");
 
       /**
        * Create a signature from hashed bytes.
        *
-       * @link https://www.w3.org/TR/vc-di-eddsa/#proof-serialization-eddsa-rdfc-2022
-       */
-      const proofBytes = await sign({ data });
-
-      /**
+       *
        * Encode signature in base-58 with Multibase header "z" and include with options and proof purpose in final proof object.
        *
        * @link https://www.w3.org/TR/vc-di-eddsa/#dataintegrityproof
+       *
+       * @link https://www.w3.org/TR/vc-di-eddsa/#proof-serialization-eddsa-rdfc-2022
        */
-      const proofValue = "z" + encode(proofBytes);
-      const { id: verificationMethod } = await keypair.export({
-        publicKey: true,
-      });
-      const proof = dataIntegrityProofSchema.parse({
-        ...options,
-        proofPurpose: "assertionMethod",
-        proofValue,
-        verificationMethod,
+      const proofValue = sign(proofHex);
+
+      (proof as Proof).proofValue = proofValue;
+      delete proof["@context"];
+
+      const signedCredential = Object.assign({}, credentialWithoutProof);
+      signedCredential.proof = [...(input.proof ?? []), proof];
+
+      await ctx.prismaConnect.achievementCredential.update({
+        data: { claimed: true },
+        where: { docId },
       });
 
-      const credential = achievementCredentialSchema.parse({
-        ...input,
-        proof: [proof],
-      });
-
-      return credential;
+      return signedCredential;
     }),
 });

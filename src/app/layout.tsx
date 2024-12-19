@@ -1,10 +1,10 @@
 import { type Metadata } from "next";
-import "~/styles/globals.css";
-import { museo } from "~/assets/fonts";
 import { DashboardHeader } from "~/components/global/header";
 import { DashboardFooter } from "~/components/global/footer";
-import { NotificationProvider } from "~/providers/notifications";
+import { NotificationProvider } from "~/providers/notification-provider";
 import { Notifications } from "~/components/global/notifications";
+import "~/styles/globals.css";
+import { museo } from "~/assets/fonts";
 
 export const metadata: Metadata = {
   title: "Badge Engine",
