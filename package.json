@@ -38,7 +38,7 @@
     "@trpc/next": "^10.45.2",
     "@trpc/react-query": "^10.45.2",
     "@trpc/server": "^10.45.2",
-    "axios": "^1.7.9",
+    "axios": "^1.12.0",
     "bcrypt": "^5.1.1",
     "bnid": "^3.0.0",
     "bson": "^6.10.1",
