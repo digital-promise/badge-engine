@@ -80,12 +80,20 @@ export default function BadgeTestPage() {
 
         <section className="flex flex-col gap-4">
           <h2 className="text-md font-semibold">Live preview</h2>
-          <div className="rounded-lg border border-neutral-3 p-4">
+          <div className="flex flex-col gap-4 rounded-lg border border-neutral-3 p-4">
             <img
               src={previewUrl}
               alt="Generated badge preview"
               className="h-auto max-w-full"
             />
+
+            <a
+              href={previewUrl}
+              download="badge-preview.png"
+              className="inline-flex w-fit rounded bg-blue-600 px-4 py-2 font-semibold text-white"
+            >
+              Download PNG
+            </a>
           </div>
         </section>
       </div>
