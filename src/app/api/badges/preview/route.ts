@@ -1,12 +1,18 @@
 import { NextResponse } from "next/server";
 import { generateBadge } from "~/server/badges/generateBadge";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+
+    const recipientName = searchParams.get("name") ?? "Jane Doe";
+    const occupation = searchParams.get("occupation") ?? "Counsellor";
+    const date = searchParams.get("date") ?? "23 March 2026";
+
     const badgeBuffer = await generateBadge({
-      recipientName: "Jane Doe",
-      occupation: "Counsellor",
-      date: "23 March 2026",
+      recipientName,
+      occupation,
+      date,
     });
 
     return new NextResponse(badgeBuffer, {
