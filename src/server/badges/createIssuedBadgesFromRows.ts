@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 
 import { prismaConnect } from "~/server/db/prismaConnect";
+import { generateAndSaveBadgeImage } from "~/server/badges/generateBadge";
 import { getActiveBadgeTemplate } from "~/server/badges/getActiveBadgeTemplate";
 import type { ParsedBadgeCsvRow } from "~/server/badges/parseCsv";
 
@@ -9,6 +10,13 @@ type CreateIssuedBadgesFromRowsInput = {
   uploadedByUserId?: string;
   csvOriginalFilename?: string;
 };
+
+function slugifyForFilename(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 export async function createIssuedBadgesFromRows(
   input: CreateIssuedBadgesFromRowsInput
@@ -47,6 +55,19 @@ export async function createIssuedBadgesFromRows(
       );
     }
 
+    const imageFileBase = `${publicId}-${slugifyForFilename(row.recipientName)}`;
+
+    const { imagePath } = await generateAndSaveBadgeImage(
+      {
+        recipientName: row.recipientName,
+        occupation: row.occupation,
+        date: row.date,
+      },
+      imageFileBase
+    );
+
+    const verificationUrl = `/verify/${publicId}`;
+
     const issuedBadge = await prismaConnect.issuedBadge.create({
       data: {
         batchId: batch.id,
@@ -58,6 +79,8 @@ export async function createIssuedBadgesFromRows(
         issueDate,
         credentialId,
         publicId,
+        imagePath,
+        verificationUrl,
         status: "VALID",
       },
     });
@@ -70,6 +93,8 @@ export async function createIssuedBadgesFromRows(
           recipientName: row.recipientName,
           recipientEmail: row.recipientEmail,
           publicId,
+          imagePath,
+          verificationUrl,
         },
       },
     });
