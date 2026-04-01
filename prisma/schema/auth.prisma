@@ -47,6 +47,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    uploadedBadgeBatches BadgeBatch[] @relation("UploadedBadgeBatches")
 }
 
 model VerificationToken {
