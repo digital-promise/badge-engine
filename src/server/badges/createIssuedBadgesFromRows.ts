@@ -42,11 +42,16 @@ export async function createIssuedBadgesFromRows(
   });
 
   const issuedBadges = [];
+  const duplicateRows: Array<{
+    recipientName: string;
+    recipientEmail: string;
+    badgeTitle: string;
+    date: string;
+    reason: string;
+    existingPublicId: string;
+  }> = [];
 
   for (const row of rows) {
-    const credentialId = randomUUID();
-    const publicId = `badge-${randomUUID().slice(0, 8)}`;
-
     const issueDate = new Date(row.date);
 
     if (Number.isNaN(issueDate.getTime())) {
@@ -54,6 +59,33 @@ export async function createIssuedBadgesFromRows(
         `Invalid date value for recipient "${row.recipientName}": ${row.date}`
       );
     }
+
+    const resolvedBadgeTitle = row.badgeTitle ?? template.name;
+
+    const existingIssuedBadge = await prismaConnect.issuedBadge.findFirst({
+      where: {
+        templateId: template.id,
+        recipientEmail: row.recipientEmail,
+        badgeTitle: resolvedBadgeTitle,
+        issueDate,
+      },
+    });
+
+    if (existingIssuedBadge) {
+      duplicateRows.push({
+        recipientName: row.recipientName,
+        recipientEmail: row.recipientEmail,
+        badgeTitle: resolvedBadgeTitle,
+        date: row.date,
+        reason: "A matching badge already exists for this recipient.",
+        existingPublicId: existingIssuedBadge.publicId,
+      });
+
+      continue;
+    }
+
+    const credentialId = randomUUID();
+    const publicId = `badge-${randomUUID().slice(0, 8)}`;
 
     const imageFileBase = `${publicId}-${slugifyForFilename(row.recipientName)}`;
 
@@ -75,7 +107,7 @@ export async function createIssuedBadgesFromRows(
         recipientName: row.recipientName,
         recipientEmail: row.recipientEmail,
         occupation: row.occupation,
-        badgeTitle: row.badgeTitle ?? template.name,
+        badgeTitle: resolvedBadgeTitle,
         issueDate,
         credentialId,
         publicId,
@@ -109,7 +141,7 @@ export async function createIssuedBadgesFromRows(
     data: {
       status: "COMPLETED",
       successCount: issuedBadges.length,
-      failureCount: rows.length - issuedBadges.length,
+      failureCount: duplicateRows.length,
       completedAt: new Date(),
     },
   });
@@ -118,6 +150,8 @@ export async function createIssuedBadgesFromRows(
     batchId: batch.id,
     templateId: template.id,
     issuedCount: issuedBadges.length,
+    duplicateCount: duplicateRows.length,
     issuedBadges,
+    duplicateRows,
   };
 }
