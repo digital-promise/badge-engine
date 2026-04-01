@@ -28,10 +28,11 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       ok: true,
-      message: "CSV uploaded and badges created successfully.",
+      message: "CSV uploaded and badge processing completed.",
       batchId: result.batchId,
       templateId: result.templateId,
       issuedCount: result.issuedCount,
+      duplicateCount: result.duplicateCount,
       issuedBadges: result.issuedBadges.map((badge) => ({
         id: badge.id,
         recipientName: badge.recipientName,
@@ -44,6 +45,7 @@ export async function POST(request: Request) {
         imagePath: badge.imagePath,
         verificationUrl: badge.verificationUrl,
       })),
+      duplicateRows: result.duplicateRows,
     });
   } catch (error) {
     console.error("CSV upload failed:", error);
