@@ -1,6 +1,8 @@
 import path from "path";
 import sharp from "sharp";
 
+import { getActiveBadgeTemplate } from "~/server/badges/getActiveBadgeTemplate";
+
 export type BadgeTextData = {
   recipientName: string;
   occupation: string;
@@ -45,12 +47,11 @@ function buildBadgeTextSvg(data: BadgeTextData): string {
 }
 
 export async function generateBadge(data: BadgeTextData): Promise<Buffer> {
+  const template = await getActiveBadgeTemplate();
   const templatePath = path.join(
     process.cwd(),
     "public",
-    "badges",
-    "templates",
-    "slim-master-competence.png"
+    template.imagePath.replace(/^\//, "")
   );
 
   const svgOverlay = buildBadgeTextSvg(data);
