@@ -1,5 +1,4 @@
 import Image from "next/image";
-
 import { notFound } from "next/navigation";
 
 import { prismaConnect } from "~/server/db/prismaConnect";
@@ -62,9 +61,7 @@ export default async function VerifyBadgePage({
 
             <div className="rounded-lg border border-neutral-3 p-4">
               <p className="text-sm font-semibold">Status</p>
-              <p className="mt-1">
-                {isRevoked ? "REVOKED" : "VALID"}
-              </p>
+              <p className="mt-1">{isRevoked ? "REVOKED" : "VALID"}</p>
             </div>
           </div>
         </section>
@@ -128,3 +125,4 @@ export default async function VerifyBadgePage({
       </div>
     </main>
   );
+}
