@@ -1,0 +1,82 @@
+enum BadgeBatchStatus {
+  DRAFT
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum IssuedBadgeStatus {
+  VALID
+  REVOKED
+}
+
+enum BadgeEventType {
+  ISSUED
+  EMAILED
+  VIEWED
+  REVOKED
+  REISSUED
+}
+
+model BadgeTemplate {
+  id         String        @id @default(auto()) @map("_id") @db.ObjectId
+  slug       String        @unique
+  name       String
+  imagePath  String
+  isActive   Boolean       @default(true)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  batches      BadgeBatch[]
+  issuedBadges IssuedBadge[]
+}
+
+model BadgeBatch {
+  id                  String           @id @default(auto()) @map("_id") @db.ObjectId
+  templateId          String           @db.ObjectId
+  uploadedByUserId    String?          @db.ObjectId
+  csvOriginalFilename String?
+  status              BadgeBatchStatus @default(DRAFT)
+  totalRows           Int              @default(0)
+  successCount        Int              @default(0)
+  failureCount        Int              @default(0)
+  createdAt           DateTime         @default(now())
+  completedAt         DateTime?
+
+  template       BadgeTemplate @relation(fields: [templateId], references: [id])
+  uploadedByUser User?         @relation("UploadedBadgeBatches", fields: [uploadedByUserId], references: [id])
+  issuedBadges   IssuedBadge[]
+}
+
+model IssuedBadge {
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  batchId         String            @db.ObjectId
+  templateId      String            @db.ObjectId
+  recipientName   String
+  recipientEmail  String
+  occupation      String?
+  badgeTitle      String?
+  issueDate       DateTime
+  credentialId    String            @unique
+  publicId        String            @unique
+  imagePath       String?
+  verificationUrl String?
+  status          IssuedBadgeStatus @default(VALID)
+  revokedAt       DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  batch    BadgeBatch    @relation(fields: [batchId], references: [id])
+  template BadgeTemplate @relation(fields: [templateId], references: [id])
+  events   BadgeEvent[]
+}
+
+model BadgeEvent {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  issuedBadgeId String         @db.ObjectId
+  type          BadgeEventType
+  payloadJson   Json?
+  createdAt     DateTime       @default(now())
+
+  issuedBadge IssuedBadge @relation(fields: [issuedBadgeId], references: [id])
+}
