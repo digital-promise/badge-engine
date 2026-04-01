@@ -8,6 +8,7 @@ type UploadResponse = {
   batchId?: string;
   templateId?: string;
   issuedCount?: number;
+  duplicateCount?: number;
   issuedBadges?: Array<{
     id: string;
     recipientName: string;
@@ -19,6 +20,14 @@ type UploadResponse = {
     status: string;
     imagePath?: string | null;
     verificationUrl?: string | null;
+  }>;
+  duplicateRows?: Array<{
+    recipientName: string;
+    recipientEmail: string;
+    badgeTitle: string;
+    date: string;
+    reason: string;
+    existingPublicId: string;
   }>;
   error?: string;
 };
@@ -125,64 +134,127 @@ export default function BadgeUploadPage() {
             <p className="font-semibold">Upload result</p>
             <p>Batch ID: {result.batchId}</p>
             <p>Template ID: {result.templateId}</p>
-            <p>Issued count: {result.issuedCount}</p>
+            <p>New badges issued: {result.issuedCount}</p>
+            <p>Duplicates skipped: {result.duplicateCount ?? 0}</p>
           </div>
 
           {result.issuedBadges?.length ? (
-            <div className="mt-6 overflow-x-auto">
-              <table className="min-w-full border-collapse text-left text-sm">
-                <thead>
-                  <tr>
-                    <th className="border-b border-neutral-3 px-3 py-2">
-                      Recipient
-                    </th>
-                    <th className="border-b border-neutral-3 px-3 py-2">
-                      Email
-                    </th>
-                    <th className="border-b border-neutral-3 px-3 py-2">
-                      Public ID
-                    </th>
-                    <th className="border-b border-neutral-3 px-3 py-2">
-                      Status
-                    </th>
-                    <th className="border-b border-neutral-3 px-3 py-2">
-                      Verification
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {result.issuedBadges.map((badge) => (
-                    <tr key={badge.id}>
-                      <td className="border-b border-neutral-2 px-3 py-2">
-                        {badge.recipientName}
-                      </td>
-                      <td className="border-b border-neutral-2 px-3 py-2">
-                        {badge.recipientEmail}
-                      </td>
-                      <td className="border-b border-neutral-2 px-3 py-2">
-                        {badge.publicId}
-                      </td>
-                      <td className="border-b border-neutral-2 px-3 py-2">
-                        {badge.status}
-                      </td>
-                      <td className="border-b border-neutral-2 px-3 py-2">
-                        {badge.verificationUrl ? (
+            <div className="mt-6">
+              <p className="mb-3 font-semibold">Newly issued badges</p>
+              <div className="overflow-x-auto">
+                <table className="min-w-full border-collapse text-left text-sm">
+                  <thead>
+                    <tr>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Recipient
+                      </th>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Email
+                      </th>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Public ID
+                      </th>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Status
+                      </th>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Verification
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.issuedBadges.map((badge) => (
+                      <tr key={badge.id}>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {badge.recipientName}
+                        </td>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {badge.recipientEmail}
+                        </td>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {badge.publicId}
+                        </td>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {badge.status}
+                        </td>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {badge.verificationUrl ? (
+                            <a
+                              href={badge.verificationUrl}
+                              className="underline"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              Open verification page
+                            </a>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : null}
+
+          {result.duplicateRows?.length ? (
+            <div className="mt-8">
+              <p className="mb-3 font-semibold">Skipped duplicates</p>
+              <div className="overflow-x-auto">
+                <table className="min-w-full border-collapse text-left text-sm">
+                  <thead>
+                    <tr>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Recipient
+                      </th>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Email
+                      </th>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Badge title
+                      </th>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Date
+                      </th>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Existing badge
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.duplicateRows.map((row) => (
+                      <tr
+                        key={`${row.recipientEmail}-${row.badgeTitle}-${row.date}`}
+                      >
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {row.recipientName}
+                        </td>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {row.recipientEmail}
+                        </td>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {row.badgeTitle}
+                        </td>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {row.date}
+                        </td>
+                        <td className="border-b border-neutral-2 px-3 py-2">
                           <a
-                            href={badge.verificationUrl}
+                            href={`/verify/${row.existingPublicId}`}
                             className="underline"
                             target="_blank"
                             rel="noreferrer"
                           >
-                            Open verification page
+                            {row.existingPublicId}
                           </a>
-                        ) : (
-                          "—"
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ) : null}
         </section>
