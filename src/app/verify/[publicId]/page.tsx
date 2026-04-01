@@ -9,6 +9,20 @@ type VerifyBadgePageProps = {
   };
 };
 
+function maskEmail(email: string): string {
+  const [localPart, domain] = email.split("@");
+
+  if (!localPart || !domain) {
+    return "Hidden";
+  }
+
+  if (localPart.length <= 2) {
+    return `${localPart[0] ?? "*"}***@${domain}`;
+  }
+
+  return `${localPart.slice(0, 2)}***@${domain}`;
+}
+
 export default async function VerifyBadgePage({
   params,
 }: VerifyBadgePageProps) {
@@ -28,6 +42,7 @@ export default async function VerifyBadgePage({
 
   const isRevoked = issuedBadge.status === "REVOKED";
   const badgeImageSrc = issuedBadge.imagePath ?? issuedBadge.template.imagePath;
+  const maskedEmail = maskEmail(issuedBadge.recipientEmail);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-10">
@@ -64,6 +79,14 @@ export default async function VerifyBadgePage({
               <p className="text-sm font-semibold">Status</p>
               <p className="mt-1">{isRevoked ? "REVOKED" : "VALID"}</p>
             </div>
+
+            <a
+              href={badgeImageSrc}
+              download={`${issuedBadge.publicId}.png`}
+              className="inline-flex w-fit rounded border border-neutral-4 px-4 py-2 font-semibold"
+            >
+              Download badge
+            </a>
           </div>
         </section>
 
@@ -92,7 +115,7 @@ export default async function VerifyBadgePage({
 
               <div>
                 <p className="text-sm font-semibold">Recipient email</p>
-                <p>{issuedBadge.recipientEmail}</p>
+                <p>{maskedEmail}</p>
               </div>
 
               <div>
