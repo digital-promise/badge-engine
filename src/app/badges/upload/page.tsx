@@ -9,6 +9,8 @@ type UploadResponse = {
   templateId?: string;
   issuedCount?: number;
   duplicateCount?: number;
+  emailedCount?: number;
+  emailFailedCount?: number;
   issuedBadges?: Array<{
     id: string;
     recipientName: string;
@@ -28,6 +30,15 @@ type UploadResponse = {
     date: string;
     reason: string;
     existingPublicId: string;
+  }>;
+  emailedRows?: Array<{
+    recipientEmail: string;
+    publicId: string;
+  }>;
+  emailFailedRows?: Array<{
+    recipientEmail: string;
+    publicId: string;
+    reason: string;
   }>;
   error?: string;
 };
@@ -136,6 +147,8 @@ export default function BadgeUploadPage() {
             <p>Template ID: {result.templateId}</p>
             <p>New badges issued: {result.issuedCount}</p>
             <p>Duplicates skipped: {result.duplicateCount ?? 0}</p>
+            <p>Emails sent: {result.emailedCount ?? 0}</p>
+            <p>Email failures: {result.emailFailedCount ?? 0}</p>
           </div>
 
           {result.issuedBadges?.length ? (
@@ -249,6 +262,76 @@ export default function BadgeUploadPage() {
                           >
                             {row.existingPublicId}
                           </a>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : null}
+
+          {result.emailedRows?.length ? (
+            <div className="mt-8">
+              <p className="mb-3 font-semibold">Emails sent</p>
+              <div className="overflow-x-auto">
+                <table className="min-w-full border-collapse text-left text-sm">
+                  <thead>
+                    <tr>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Email
+                      </th>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Public ID
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.emailedRows.map((row) => (
+                      <tr key={`${row.recipientEmail}-${row.publicId}`}>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {row.recipientEmail}
+                        </td>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {row.publicId}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : null}
+
+          {result.emailFailedRows?.length ? (
+            <div className="mt-8">
+              <p className="mb-3 font-semibold">Email failures</p>
+              <div className="overflow-x-auto">
+                <table className="min-w-full border-collapse text-left text-sm">
+                  <thead>
+                    <tr>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Email
+                      </th>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Public ID
+                      </th>
+                      <th className="border-b border-neutral-3 px-3 py-2">
+                        Reason
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.emailFailedRows.map((row) => (
+                      <tr key={`${row.recipientEmail}-${row.publicId}`}>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {row.recipientEmail}
+                        </td>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {row.publicId}
+                        </td>
+                        <td className="border-b border-neutral-2 px-3 py-2">
+                          {row.reason}
                         </td>
                       </tr>
                     ))}
