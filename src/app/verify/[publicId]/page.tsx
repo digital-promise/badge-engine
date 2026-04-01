@@ -27,6 +27,7 @@ export default async function VerifyBadgePage({
   }
 
   const isRevoked = issuedBadge.status === "REVOKED";
+  const badgeImageSrc = issuedBadge.imagePath ?? issuedBadge.template.imagePath;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-10">
@@ -50,7 +51,7 @@ export default async function VerifyBadgePage({
 
             <div className="overflow-hidden rounded-lg border border-neutral-3 p-4">
               <Image
-                src={issuedBadge.template.imagePath}
+                src={badgeImageSrc}
                 alt={`${issuedBadge.badgeTitle ?? issuedBadge.template.name} badge`}
                 width={3004}
                 height={3004}
