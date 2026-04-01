@@ -36,6 +36,9 @@ export const env = createEnv({
     AUTH0_CLIENT_SECRET: z.string(),
     AUTH0_ISSUER: z.string().url(),
 
+    RESEND_API_KEY: z.string(),
+    EMAIL_FROM: z.string(),
+
     STATUS_SERVICE_URL: z.string().optional(),
     STATUS_LIST_URL: z.string().url().optional(),
     STATUS_LIST_ID: z.string().optional(),
