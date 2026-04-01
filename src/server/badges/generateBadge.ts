@@ -1,3 +1,4 @@
+import fs from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 
@@ -31,15 +32,15 @@ function buildBadgeTextSvg(data: BadgeTextData): string {
         }
       </style>
 
-      <text x="1502" y="2010" class="field" font-size="110">
+      <text x="1730" y="2100" class="field" font-size="105">
         ${escapeXml(data.recipientName)}
       </text>
 
-      <text x="1502" y="2170" class="field" font-size="82">
+      <text x="1730" y="2240" class="field" font-size="78">
         ${escapeXml(data.occupation)}
       </text>
 
-      <text x="1502" y="2330" class="field" font-size="82">
+      <text x="1730" y="2370" class="field" font-size="78">
         ${escapeXml(data.date)}
       </text>
     </svg>
@@ -48,6 +49,7 @@ function buildBadgeTextSvg(data: BadgeTextData): string {
 
 export async function generateBadge(data: BadgeTextData): Promise<Buffer> {
   const template = await getActiveBadgeTemplate();
+
   const templatePath = path.join(
     process.cwd(),
     "public",
@@ -66,4 +68,26 @@ export async function generateBadge(data: BadgeTextData): Promise<Buffer> {
     ])
     .png()
     .toBuffer();
+}
+
+export async function generateAndSaveBadgeImage(
+  data: BadgeTextData,
+  filename: string
+): Promise<{ imagePath: string }> {
+  const badgeBuffer = await generateBadge(data);
+
+  const relativePath = `/generated-badges/${filename}.png`;
+  const absolutePath = path.join(
+    process.cwd(),
+    "public",
+    "generated-badges",
+    `${filename}.png`
+  );
+
+  await fs.mkdir(path.dirname(absolutePath), { recursive: true });
+  await fs.writeFile(absolutePath, badgeBuffer);
+
+  return {
+    imagePath: relativePath,
+  };
 }
