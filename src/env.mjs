@@ -68,6 +68,8 @@ export const env = createEnv({
     STATUS_SERVICE_URL: process.env.STATUS_SERVICE_URL,
     STATUS_LIST_URL: process.env.STATUS_LIST_URL,
     STATUS_LIST_ID: process.env.STATUS_LIST_ID,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    EMAIL_FROM: process.env.EMAIL_FROM,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
