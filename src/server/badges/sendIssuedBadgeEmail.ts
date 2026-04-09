@@ -1,7 +1,5 @@
 import { Resend } from "resend";
 
-import { env } from "~/env";
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 type SendIssuedBadgeEmailInput = {
@@ -39,7 +37,7 @@ export async function sendIssuedBadgeEmail(
   `;
 
   const result = await resend.emails.send({
-    from: env.EMAIL_FROM,
+    from: process.env.EMAIL_FROM!,
     to: recipientEmail,
     subject,
     html,
