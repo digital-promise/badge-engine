@@ -15,8 +15,6 @@ const REQUIRED_HEADERS = [
   "hpscaRegistrationNumber",
 ] as const;
 
-const OPTIONAL_HEADERS = ["badgeTitle"] as const;
-
 function normalizeLineEndings(value: string): string {
   return value.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
 }
@@ -71,7 +69,7 @@ export function parseCsv(csvText: string): ParsedBadgeCsvRow[] {
       occupation: rowObject.occupation ?? "",
       date: rowObject.date ?? "",
       hpscaRegistrationNumber: rowObject.hpscaRegistrationNumber ?? "",
-      badgeTitle: rowObject.badgeTitle || undefined,
+      badgeTitle: rowObject.badgeTitle ?? undefined,
     };
 
     if (
