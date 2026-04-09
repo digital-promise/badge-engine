@@ -33,19 +33,19 @@ function buildBadgeTextSvg(data: BadgeTextData): string {
         }
       </style>
 
-      <text x="1730" y="2040" class="field" font-size="105">
+      <text x="1550" y="2040" class="field" font-size="105">
         ${escapeXml(data.recipientName)}
       </text>
 
-      <text x="1730" y="2170" class="field" font-size="78">
+      <text x="1550" y="2170" class="field" font-size="78">
         ${escapeXml(data.occupation)}
       </text>
 
-      <text x="1730" y="2300" class="field" font-size="74">
+      <text x="1550" y="2300" class="field" font-size="74">
         Date: ${escapeXml(data.date)}
       </text>
 
-      <text x="1730" y="2415" class="field" font-size="72">
+      <text x="1550" y="2415" class="field" font-size="72">
         HPSCA Reg No: ${escapeXml(data.hpscaRegistrationNumber)}
       </text>
     </svg>
