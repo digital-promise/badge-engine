@@ -10,6 +10,7 @@ type VerifyBadgePageClientProps = {
   issueDateLabel: string;
   isRevoked: boolean;
   occupation: string | null;
+  hpscaRegistrationNumber: string | null;
   publicId: string;
   recipientName: string;
   recipientEmailMasked: string;
@@ -53,6 +54,7 @@ export default function VerifyBadgePageClient(
     issueDateLabel,
     isRevoked,
     occupation,
+    hpscaRegistrationNumber,
     publicId,
     recipientName,
     recipientEmailMasked,
@@ -164,6 +166,11 @@ export default function VerifyBadgePageClient(
               <div>
                 <p className="text-sm font-semibold">Occupation</p>
                 <p>{occupation ?? "—"}</p>
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold">HPSCA Registration Number</p>
+                <p>{hpscaRegistrationNumber ?? "—"}</p>
               </div>
 
               <div>
