@@ -8,6 +8,7 @@ export type BadgeTextData = {
   recipientName: string;
   occupation: string;
   date: string;
+  hpscaRegistrationNumber: string;
 };
 
 function escapeXml(value: string): string {
@@ -41,7 +42,11 @@ function buildBadgeTextSvg(data: BadgeTextData): string {
       </text>
 
       <text x="1730" y="2370" class="field" font-size="78">
-        ${escapeXml(data.date)}
+        Date: ${escapeXml(data.date)}
+      </text>
+
+      <text x="1730" y="2470" class="field" font-size="64">
+        HPSCA Reg No: ${escapeXml(data.hpscaRegistrationNumber)}
       </text>
     </svg>
   `;
