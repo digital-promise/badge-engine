@@ -118,7 +118,7 @@ export default function BadgeUploadPage() {
           <div className="rounded-lg border border-neutral-3 p-4">
             <p className="text-sm font-semibold">Expected CSV headers</p>
             <code className="mt-2 block break-all text-sm">
-              recipientName,recipientEmail,occupation,date,badgeTitle
+              recipientName,recipientEmail,occupation,date,hpscaRegistrationNumber,badgeTitle
             </code>
           </div>
 
