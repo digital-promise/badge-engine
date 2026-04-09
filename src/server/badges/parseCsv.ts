@@ -3,6 +3,7 @@ export type ParsedBadgeCsvRow = {
   recipientEmail: string;
   occupation: string;
   date: string;
+  hpscaRegistrationNumber: string;
   badgeTitle?: string;
 };
 
@@ -11,6 +12,7 @@ const REQUIRED_HEADERS = [
   "recipientEmail",
   "occupation",
   "date",
+  "hpscaRegistrationNumber",
 ] as const;
 
 const OPTIONAL_HEADERS = ["badgeTitle"] as const;
@@ -68,6 +70,7 @@ export function parseCsv(csvText: string): ParsedBadgeCsvRow[] {
       recipientEmail: rowObject.recipientEmail ?? "",
       occupation: rowObject.occupation ?? "",
       date: rowObject.date ?? "",
+      hpscaRegistrationNumber: rowObject.hpscaRegistrationNumber ?? "",
       badgeTitle: rowObject.badgeTitle || undefined,
     };
 
@@ -75,7 +78,8 @@ export function parseCsv(csvText: string): ParsedBadgeCsvRow[] {
       !parsedRow.recipientName ||
       !parsedRow.recipientEmail ||
       !parsedRow.occupation ||
-      !parsedRow.date
+      !parsedRow.date ||
+      !parsedRow.hpscaRegistrationNumber
     ) {
       throw new Error(`CSV row ${i + 1} is missing one or more required values.`);
     }
