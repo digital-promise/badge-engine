@@ -55,6 +55,7 @@ model IssuedBadge {
   recipientName   String
   recipientEmail  String
   occupation      String?
+  hpscaRegistrationNumber String?
   badgeTitle      String?
   issueDate       DateTime
   credentialId    String            @unique
