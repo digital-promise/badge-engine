@@ -52,6 +52,7 @@ export default async function VerifyBadgePage({
       issueDateLabel={issuedBadge.issueDate.toLocaleDateString("en-GB")}
       isRevoked={isRevoked}
       occupation={issuedBadge.occupation}
+      hpscaRegistrationNumber={issuedBadge.hpscaRegistrationNumber}
       publicId={issuedBadge.publicId}
       recipientName={issuedBadge.recipientName}
       recipientEmailMasked={recipientEmailMasked}
