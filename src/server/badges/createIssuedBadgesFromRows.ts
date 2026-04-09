@@ -110,6 +110,7 @@ export async function createIssuedBadgesFromRows(
         recipientName: row.recipientName,
         occupation: row.occupation,
         date: row.date,
+        hpscaRegistrationNumber: row.hpscaRegistrationNumber,
       },
       imageFileBase
     );
@@ -123,6 +124,7 @@ export async function createIssuedBadgesFromRows(
         recipientName: row.recipientName,
         recipientEmail: row.recipientEmail,
         occupation: row.occupation,
+        hpscaRegistrationNumber: row.hpscaRegistrationNumber,
         badgeTitle: resolvedBadgeTitle,
         issueDate,
         credentialId,
@@ -143,6 +145,7 @@ export async function createIssuedBadgesFromRows(
           publicId,
           imagePath,
           verificationUrl,
+          hpscaRegistrationNumber: row.hpscaRegistrationNumber,
         },
       },
     });
