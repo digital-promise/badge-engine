@@ -3,7 +3,7 @@ import { issuerRouter } from "~/server/api/routers/issuer.router";
 import { credentialRouter } from "./routers/credential.router";
 import { imageRouter } from "~/server/api/routers/image.router";
 import { awardRouter } from "./routers/award.router";
-import { signingRouter } from "./routers/signing.router";
+//import { signingRouter } from "./routers/signing.router";
 
 /**
  * This is the primary router for your server.
@@ -15,7 +15,7 @@ export const appRouter = createTRPCRouter({
   credential: credentialRouter,
   image: imageRouter,
   award: awardRouter,
-  signing: signingRouter,
+  //signing: signingRouter,
 });
 
 // export type definition of API
