@@ -7,6 +7,7 @@ export async function GET() {
       recipientName: "Jane Doe",
       occupation: "Counsellor",
       date: "23 March 2026",
+      hpscaRegistrationNumber: "PS0000000",
     });
 
     return new NextResponse(badgeBuffer, {
