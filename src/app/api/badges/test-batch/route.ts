@@ -12,6 +12,7 @@ export async function GET() {
           recipientEmail: "jane@example.com",
           occupation: "Counsellor",
           date: "2026-04-01",
+          hpscaRegistrationNumber: "PS0000000",
           badgeTitle: "SLIM Master Competence",
         },
         {
@@ -19,6 +20,7 @@ export async function GET() {
           recipientEmail: "alex@example.com",
           occupation: "Educator",
           date: "2026-04-01",
+          hpscaRegistrationNumber: "PS0000000",
           badgeTitle: "SLIM Master Competence",
         },
       ],
