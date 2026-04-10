@@ -14,27 +14,25 @@ export type BadgeTextData = {
 type TextBlockOptions = {
   text: string;
   top: number;
-  height: number;
   fontSize: number;
 };
 
 function escapeText(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
-async function renderCenteredTextBlock(
-  width: number,
+async function renderTextBlock(
   fontPath: string,
   options: TextBlockOptions
 ): Promise<Buffer> {
   return await sharp({
     text: {
       text: escapeText(options.text),
-      font: "Inter Bold",
+      font: `Inter Bold ${options.fontSize}`,
       fontfile: fontPath,
-      width,
-      height: options.height,
-      align: "center",
       rgba: true,
     },
   })
@@ -65,45 +63,63 @@ export async function generateBadge(data: BadgeTextData): Promise<Buffer> {
 
   const width = metadata.width ?? 3004;
 
-  const recipientTop = 1940;
-  const occupationTop = 2085;
-  const dateTop = 2210;
-  const registrationTop = 2325;
+  const recipientTop = 1980;
+  const occupationTop = 2110;
+  const dateTop = 2235;
+  const registrationTop = 2350;
 
-  const recipientBlock = await renderCenteredTextBlock(width, fontPath, {
+  const recipientBlock = await renderTextBlock(fontPath, {
     text: data.recipientName,
     top: recipientTop,
-    height: 130,
     fontSize: 105,
   });
 
-  const occupationBlock = await renderCenteredTextBlock(width, fontPath, {
+  const occupationBlock = await renderTextBlock(fontPath, {
     text: data.occupation,
     top: occupationTop,
-    height: 110,
     fontSize: 78,
   });
 
-  const dateBlock = await renderCenteredTextBlock(width, fontPath, {
+  const dateBlock = await renderTextBlock(fontPath, {
     text: `Date: ${data.date}`,
     top: dateTop,
-    height: 100,
     fontSize: 74,
   });
 
-  const registrationBlock = await renderCenteredTextBlock(width, fontPath, {
+  const registrationBlock = await renderTextBlock(fontPath, {
     text: `HPSCA Reg No: ${data.hpscaRegistrationNumber}`,
     top: registrationTop,
-    height: 100,
     fontSize: 72,
   });
 
+  const recipientMeta = await sharp(recipientBlock).metadata();
+  const occupationMeta = await sharp(occupationBlock).metadata();
+  const dateMeta = await sharp(dateBlock).metadata();
+  const registrationMeta = await sharp(registrationBlock).metadata();
+
+  const recipientLeft = Math.max(
+    0,
+    Math.round((width - (recipientMeta.width ?? 0)) / 2)
+  );
+  const occupationLeft = Math.max(
+    0,
+    Math.round((width - (occupationMeta.width ?? 0)) / 2)
+  );
+  const dateLeft = Math.max(
+    0,
+    Math.round((width - (dateMeta.width ?? 0)) / 2)
+  );
+  const registrationLeft = Math.max(
+    0,
+    Math.round((width - (registrationMeta.width ?? 0)) / 2)
+  );
+
   return await templateImage
     .composite([
-      { input: recipientBlock, top: recipientTop, left: 0 },
-      { input: occupationBlock, top: occupationTop, left: 0 },
-      { input: dateBlock, top: dateTop, left: 0 },
-      { input: registrationBlock, top: registrationTop, left: 0 },
+      { input: recipientBlock, top: recipientTop, left: recipientLeft },
+      { input: occupationBlock, top: occupationTop, left: occupationLeft },
+      { input: dateBlock, top: dateTop, left: dateLeft },
+      { input: registrationBlock, top: registrationTop, left: registrationLeft },
     ])
     .png()
     .toBuffer();
