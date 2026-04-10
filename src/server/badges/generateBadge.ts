@@ -11,103 +11,36 @@ export type BadgeTextData = {
   hpscaRegistrationNumber: string;
 };
 
-function escapeXml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+type TextBlockOptions = {
+  text: string;
+  top: number;
+  height: number;
+  fontSize: number;
+};
+
+function escapeText(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-async function getEmbeddedFontCss(): Promise<string> {
-  const fontPath = path.join(
-    process.cwd(),
-    "public",
-    "fonts",
-    "Inter-Bold.ttf"
-  );
-
-  const fontBuffer = await fs.readFile(fontPath);
-  const fontBase64 = fontBuffer.toString("base64");
-
-  return `
-    @font-face {
-      font-family: "BadgeSans";
-      src: url("data:font/ttf;base64,${fontBase64}") format("truetype");
-      font-weight: 700;
-      font-style: normal;
-    }
-  `;
-}
-
-async function buildBadgeTextSvg(
-  data: BadgeTextData,
+async function renderCenteredTextBlock(
   width: number,
-  height: number
-): Promise<string> {
-  const fontCss = await getEmbeddedFontCss();
-
-  const centerX = 1500;
-
-  const recipientY = 2040;
-  const occupationY = 2170;
-  const dateY = 2300;
-  const registrationY = 2415;
-
-  return `
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="${width}"
-      height="${height}"
-      viewBox="0 0 ${width} ${height}"
-    >
-      <defs>
-        <style>
-          <![CDATA[
-            ${fontCss}
-            .badge-text {
-              font-family: "BadgeSans";
-              fill: #2f3640;
-              text-anchor: middle;
-            }
-          ]]>
-        </style>
-      </defs>
-
-      <text
-        class="badge-text"
-        x="${centerX}"
-        y="${recipientY}"
-        font-size="105"
-        font-weight="700"
-      >${escapeXml(data.recipientName)}</text>
-
-      <text
-        class="badge-text"
-        x="${centerX}"
-        y="${occupationY}"
-        font-size="78"
-        font-weight="700"
-      >${escapeXml(data.occupation)}</text>
-
-      <text
-        class="badge-text"
-        x="${centerX}"
-        y="${dateY}"
-        font-size="74"
-        font-weight="700"
-      >Date: ${escapeXml(data.date)}</text>
-
-      <text
-        class="badge-text"
-        x="${centerX}"
-        y="${registrationY}"
-        font-size="72"
-        font-weight="700"
-      >HPSCA Reg No: ${escapeXml(data.hpscaRegistrationNumber)}</text>
-    </svg>
-  `;
+  fontPath: string,
+  options: TextBlockOptions
+): Promise<Buffer> {
+  return await sharp({
+    text: {
+      text: escapeText(options.text),
+      font: "Inter Bold",
+      fontfile: fontPath,
+      width,
+      height: options.height,
+      align: "center",
+      rgba: true,
+      dpi: 300,
+    },
+  })
+    .png()
+    .toBuffer();
 }
 
 export async function generateBadge(data: BadgeTextData): Promise<Buffer> {
@@ -119,28 +52,60 @@ export async function generateBadge(data: BadgeTextData): Promise<Buffer> {
     template.imagePath.replace(/^\//, "")
   );
 
+  const fontPath = path.join(
+    process.cwd(),
+    "public",
+    "fonts",
+    "Inter-Bold.ttf"
+  );
+
+  await fs.access(fontPath);
+
   const templateImage = sharp(templatePath);
   const metadata = await templateImage.metadata();
 
   const width = metadata.width ?? 3004;
   const height = metadata.height ?? 3004;
 
-  const svgOverlay = await buildBadgeTextSvg(data, width, height);
+  const recipientTop = 1940;
+  const occupationTop = 2085;
+  const dateTop = 2210;
+  const registrationTop = 2325;
 
-  const textOverlayPng = await sharp(Buffer.from(svgOverlay), {
-    density: 300,
-  })
-    .resize(width, height)
-    .png()
-    .toBuffer();
+  const recipientBlock = await renderCenteredTextBlock(width, fontPath, {
+    text: data.recipientName,
+    top: recipientTop,
+    height: 130,
+    fontSize: 105,
+  });
+
+  const occupationBlock = await renderCenteredTextBlock(width, fontPath, {
+    text: data.occupation,
+    top: occupationTop,
+    height: 110,
+    fontSize: 78,
+  });
+
+  const dateBlock = await renderCenteredTextBlock(width, fontPath, {
+    text: `Date: ${data.date}`,
+    top: dateTop,
+    height: 100,
+    fontSize: 74,
+  });
+
+  const registrationBlock = await renderCenteredTextBlock(width, fontPath, {
+    text: `HPSCA Reg No: ${data.hpscaRegistrationNumber}`,
+    top: registrationTop,
+    height: 100,
+    fontSize: 72,
+  });
 
   return await templateImage
     .composite([
-      {
-        input: textOverlayPng,
-        top: 0,
-        left: 0,
-      },
+      { input: recipientBlock, top: recipientTop, left: 0 },
+      { input: occupationBlock, top: occupationTop, left: 0 },
+      { input: dateBlock, top: dateTop, left: 0 },
+      { input: registrationBlock, top: registrationTop, left: 0 },
     ])
     .png()
     .toBuffer();
