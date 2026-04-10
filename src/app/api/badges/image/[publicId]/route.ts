@@ -24,10 +24,10 @@ export async function GET(
     }
 
     const badgeBuffer = await generateBadge({
-      recipientName: issuedBadge.recipientName,
+      recipientName: issuedBadge.recipientName ?? "",
       occupation: issuedBadge.occupation ?? "",
       date: issuedBadge.issueDate.toLocaleDateString("en-GB"),
-      hpscaRegistrationNumber: issuedBadge.hpscaRegistrationNumber,
+      hpscaRegistrationNumber: issuedBadge.hpscaRegistrationNumber ?? "",
     });
 
     return new NextResponse(badgeBuffer, {
