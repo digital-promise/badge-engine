@@ -28,21 +28,14 @@ async function renderTextBlock(
   fontPath: string,
   options: TextBlockOptions
 ): Promise<Buffer> {
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg">
-      <style>
-        text {
-          font-family: "Inter Bold";
-          font-size: ${options.fontSize}px;
-          font-weight: 700;
-          fill: #2f3640;
-        }
-      </style>
-      <text x="0" y="${options.fontSize}">${escapeText(options.text)}</text>
-    </svg>
-  `;
-
-  return await sharp(Buffer.from(svg))
+  return await sharp({
+    text: {
+      text: escapeText(options.text),
+      font: `Inter Bold ${options.fontSize}`,
+      fontfile: fontPath,
+      rgba: true,
+    },
+  })
     .png()
     .toBuffer();
 }
