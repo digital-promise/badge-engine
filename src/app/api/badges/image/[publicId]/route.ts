@@ -34,7 +34,7 @@ export async function GET(
       headers: {
         "Content-Type": "image/png",
         "Content-Disposition": `inline; filename="${issuedBadge.publicId}.png"`,
-        "Cache-Control": "public, max-age=0",
+        "Cache-Control": "public, max-age=0, s-maxage=31536000",
       },
     });
   } catch (error) {
