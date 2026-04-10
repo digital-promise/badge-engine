@@ -28,14 +28,21 @@ async function renderTextBlock(
   fontPath: string,
   options: TextBlockOptions
 ): Promise<Buffer> {
-  return await sharp({
-    text: {
-      text: escapeText(options.text),
-      font: `Inter Bold ${options.fontSize}`,
-      fontfile: fontPath,
-      rgba: true,
-    },
-  })
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <style>
+        text {
+          font-family: "Inter Bold";
+          font-size: ${options.fontSize}px;
+          font-weight: 700;
+          fill: #2f3640;
+        }
+      </style>
+      <text x="0" y="${options.fontSize}">${escapeText(options.text)}</text>
+    </svg>
+  `;
+
+  return await sharp(Buffer.from(svg))
     .png()
     .toBuffer();
 }
@@ -63,33 +70,33 @@ export async function generateBadge(data: BadgeTextData): Promise<Buffer> {
 
   const width = metadata.width ?? 3004;
 
-  const recipientTop = 1980;
-  const occupationTop = 2110;
-  const dateTop = 2235;
-  const registrationTop = 2350;
+  const recipientTop = 1935;
+  const occupationTop = 2060;
+  const dateTop = 2175;
+  const registrationTop = 2285;
 
   const recipientBlock = await renderTextBlock(fontPath, {
     text: data.recipientName,
     top: recipientTop,
-    fontSize: 105,
+    fontSize: 92,
   });
 
   const occupationBlock = await renderTextBlock(fontPath, {
     text: data.occupation,
     top: occupationTop,
-    fontSize: 78,
+    fontSize: 68,
   });
 
   const dateBlock = await renderTextBlock(fontPath, {
     text: `Date: ${data.date}`,
     top: dateTop,
-    fontSize: 74,
+    fontSize: 60,
   });
 
   const registrationBlock = await renderTextBlock(fontPath, {
     text: `HPSCA Reg No: ${data.hpscaRegistrationNumber}`,
     top: registrationTop,
-    fontSize: 72,
+    fontSize: 54,
   });
 
   const recipientMeta = await sharp(recipientBlock).metadata();
