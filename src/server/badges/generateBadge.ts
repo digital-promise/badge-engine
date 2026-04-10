@@ -89,7 +89,7 @@ export async function generateBadge(data: BadgeTextData): Promise<Buffer> {
   const registrationBlock = await renderTextBlock(fontPath, {
     text: `HPSCA Reg No: ${data.hpscaRegistrationNumber}`,
     top: registrationTop,
-    fontSize: 54,
+    fontSize: 50,
   });
 
   const recipientMeta = await sharp(recipientBlock).metadata();
