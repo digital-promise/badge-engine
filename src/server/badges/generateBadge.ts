@@ -26,6 +26,11 @@ function buildBadgeTextSvg(
 ): string {
   const centerX = Math.round(width / 2);
 
+  const recipientY = Math.round(height * 0.679); // ~2040 on 3004px
+  const occupationY = Math.round(height * 0.722); // ~2170
+  const dateY = Math.round(height * 0.766); // ~2300
+  const registrationY = Math.round(height * 0.804); // ~2415
+
   return `
     <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
       <style>
@@ -37,19 +42,19 @@ function buildBadgeTextSvg(
         }
       </style>
 
-      <text x="${centerX}" y="695" class="field" font-size="46">
+      <text x="${centerX}" y="${recipientY}" class="field" font-size="105">
         ${escapeXml(data.recipientName)}
       </text>
 
-      <text x="${centerX}" y="750" class="field" font-size="30">
+      <text x="${centerX}" y="${occupationY}" class="field" font-size="78">
         ${escapeXml(data.occupation)}
       </text>
 
-      <text x="${centerX}" y="805" class="field" font-size="28">
+      <text x="${centerX}" y="${dateY}" class="field" font-size="74">
         Date: ${escapeXml(data.date)}
       </text>
 
-      <text x="${centerX}" y="850" class="field" font-size="28">
+      <text x="${centerX}" y="${registrationY}" class="field" font-size="72">
         HPSCA Reg No: ${escapeXml(data.hpscaRegistrationNumber)}
       </text>
     </svg>
