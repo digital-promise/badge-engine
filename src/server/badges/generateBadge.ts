@@ -1,3 +1,4 @@
+import fs from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 
@@ -24,12 +25,12 @@ function buildBadgeTextSvg(
   width: number,
   height: number
 ): string {
-  const centerX = Math.round(width / 2);
+  const centerX = 1500;
 
-  const recipientY = Math.round(height * 0.679);
-  const occupationY = Math.round(height * 0.722);
-  const dateY = Math.round(height * 0.766);
-  const registrationY = Math.round(height * 0.804);
+  const recipientY = 2040;
+  const occupationY = 2170;
+  const dateY = 2300;
+  const registrationY = 2415;
 
   return `
     <svg
@@ -115,4 +116,26 @@ export async function generateBadge(data: BadgeTextData): Promise<Buffer> {
     ])
     .png()
     .toBuffer();
+}
+
+export async function generateAndSaveBadgeImage(
+  data: BadgeTextData,
+  filename: string
+): Promise<{ imagePath: string }> {
+  const badgeBuffer = await generateBadge(data);
+
+  const relativePath = `/generated-badges/${filename}.png`;
+  const absolutePath = path.join(
+    process.cwd(),
+    "public",
+    "generated-badges",
+    `${filename}.png`
+  );
+
+  await fs.mkdir(path.dirname(absolutePath), { recursive: true });
+  await fs.writeFile(absolutePath, badgeBuffer);
+
+  return {
+    imagePath: relativePath,
+  };
 }
