@@ -36,7 +36,6 @@ async function renderCenteredTextBlock(
       height: options.height,
       align: "center",
       rgba: true,
-      dpi: 300,
     },
   })
     .png()
@@ -65,7 +64,6 @@ export async function generateBadge(data: BadgeTextData): Promise<Buffer> {
   const metadata = await templateImage.metadata();
 
   const width = metadata.width ?? 3004;
-  const height = metadata.height ?? 3004;
 
   const recipientTop = 1940;
   const occupationTop = 2085;
