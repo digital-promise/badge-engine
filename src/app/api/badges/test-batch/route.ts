@@ -1,9 +1,20 @@
 import { NextResponse } from "next/server";
 
-import { createIssuedBadgesFromRows } from "~/server/badges/createIssuedBadgesFromRows";
+export const dynamic = "force-dynamic";
 
 export async function GET() {
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      { error: "Not available in production." },
+      { status: 404 }
+    );
+  }
+
   try {
+    const { createIssuedBadgesFromRows } = await import(
+      "~/server/badges/createIssuedBadgesFromRows"
+    );
+
     const result = await createIssuedBadgesFromRows({
       csvOriginalFilename: "test-batch.csv",
       rows: [
@@ -20,7 +31,7 @@ export async function GET() {
           recipientEmail: "alex@example.com",
           occupation: "Educator",
           date: "2026-04-01",
-          hpscaRegistrationNumber: "PS0000000",
+          hpscaRegistrationNumber: "PS0000001",
           badgeTitle: "SLIM Master Competence",
         },
       ],
@@ -32,16 +43,9 @@ export async function GET() {
       batchId: result.batchId,
       templateId: result.templateId,
       issuedCount: result.issuedCount,
-      issuedBadges: result.issuedBadges.map((badge) => ({
-        id: badge.id,
-        recipientName: badge.recipientName,
-        recipientEmail: badge.recipientEmail,
-        publicId: badge.publicId,
-        credentialId: badge.credentialId,
-        badgeTitle: badge.badgeTitle,
-        issueDate: badge.issueDate,
-        status: badge.status,
-      })),
+      duplicateCount: result.duplicateCount,
+      emailedCount: result.emailedCount,
+      emailFailedCount: result.emailFailedCount,
     });
   } catch (error) {
     console.error("Test batch creation failed:", error);
