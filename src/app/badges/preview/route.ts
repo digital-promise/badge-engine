@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
-import { generateBadge } from "~/server/badges/generateBadge";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
+    const { generateBadge } = await import("~/server/badges/generateBadge");
+
     const badgeBuffer = await generateBadge({
       recipientName: "Jane Doe",
       occupation: "Counsellor",
@@ -21,7 +24,7 @@ export async function GET() {
     console.error("Badge preview generation failed:", error);
 
     return NextResponse.json(
-      { error: "Failed to generate badge preview" },
+      { error: "Failed to generate badge preview." },
       { status: 500 }
     );
   }
