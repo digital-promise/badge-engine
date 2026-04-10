@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 
 import { prismaConnect } from "~/server/db/prismaConnect";
-import { generateAndSaveBadgeImage } from "~/server/badges/generateBadge";
+import { generateBadge } from "~/server/badges/generateBadge";
 import { getActiveBadgeTemplate } from "~/server/badges/getActiveBadgeTemplate";
 import type { ParsedBadgeCsvRow } from "~/server/badges/parseCsv";
 import { sendIssuedBadgeEmail } from "~/server/badges/sendIssuedBadgeEmail";
