@@ -13,13 +13,6 @@ type CreateIssuedBadgesFromRowsInput = {
   baseUrl?: string;
 };
 
-function slugifyForFilename(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
 export async function createIssuedBadgesFromRows(
   input: CreateIssuedBadgesFromRowsInput
 ) {
@@ -103,18 +96,14 @@ export async function createIssuedBadgesFromRows(
     const credentialId = randomUUID();
     const publicId = `badge-${randomUUID().slice(0, 8)}`;
 
-    const imageFileBase = `${publicId}-${slugifyForFilename(row.recipientName)}`;
-
-    const { imagePath } = await generateAndSaveBadgeImage(
-      {
+    await generateBadge({
         recipientName: row.recipientName,
         occupation: row.occupation,
         date: row.date,
         hpscaRegistrationNumber: row.hpscaRegistrationNumber,
-      },
-      imageFileBase
-    );
-
+      });
+    
+    const imagePath = `/api/badges/image/${publicId}`;
     const verificationUrl = `/verify/${publicId}`;
 
     const issuedBadge = await prismaConnect.issuedBadge.create({
