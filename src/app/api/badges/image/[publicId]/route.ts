@@ -25,7 +25,7 @@ export async function GET(
 
     const badgeBuffer = await generateBadge({
       recipientName: issuedBadge.recipientName,
-      occupation: issuedBadge.occupation,
+      occupation: issuedBadge.occupation ?? "",
       date: issuedBadge.issueDate.toLocaleDateString("en-GB"),
       hpscaRegistrationNumber: issuedBadge.hpscaRegistrationNumber,
     });
