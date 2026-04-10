@@ -6,7 +6,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
 
-    const recipientName = searchParams.get("recipientName") ?? "Jane Doe";
+    const recipientName = searchParams.get("recipientName") ?? "ZIP TEST 123";
     const occupation = searchParams.get("occupation") ?? "Counsellor";
     const date = searchParams.get("date") ?? "23 March 2026";
     const hpscaRegistrationNumber =
