@@ -33,28 +33,55 @@ function buildBadgeTextSvg(
 
   return `
     <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-      <style>
-        .field {
-          font-family: Arial, Helvetica, sans-serif;
-          font-weight: 700;
-          fill: #2f3640;
-          text-anchor: middle;
-        }
-      </style>
-
-      <text x="${centerX}" y="${recipientY}" class="field" font-size="105">
+      <text
+        x="${centerX}"
+        y="${recipientY}"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="105"
+        font-weight="700"
+        fill="#2f3640"
+        text-anchor="middle"
+        dominant-baseline="middle"
+      >
         ${escapeXml(data.recipientName)}
       </text>
 
-      <text x="${centerX}" y="${occupationY}" class="field" font-size="78">
+      <text
+        x="${centerX}"
+        y="${occupationY}"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="78"
+        font-weight="700"
+        fill="#2f3640"
+        text-anchor="middle"
+        dominant-baseline="middle"
+      >
         ${escapeXml(data.occupation)}
       </text>
 
-      <text x="${centerX}" y="${dateY}" class="field" font-size="74">
+      <text
+        x="${centerX}"
+        y="${dateY}"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="74"
+        font-weight="700"
+        fill="#2f3640"
+        text-anchor="middle"
+        dominant-baseline="middle"
+      >
         Date: ${escapeXml(data.date)}
       </text>
 
-      <text x="${centerX}" y="${registrationY}" class="field" font-size="72">
+      <text
+        x="${centerX}"
+        y="${registrationY}"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="72"
+        font-weight="700"
+        fill="#2f3640"
+        text-anchor="middle"
+        dominant-baseline="middle"
+      >
         HPSCA Reg No: ${escapeXml(data.hpscaRegistrationNumber)}
       </text>
     </svg>
