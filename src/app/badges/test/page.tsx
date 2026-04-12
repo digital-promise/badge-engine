@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 
 export default function BadgeTestPage() {
@@ -81,9 +82,12 @@ export default function BadgeTestPage() {
         <section className="flex flex-col gap-4">
           <h2 className="text-md font-semibold">Live preview</h2>
           <div className="flex flex-col gap-4 rounded-lg border border-neutral-3 p-4">
-            <img
+            <Image
               src={previewUrl}
               alt="Generated badge preview"
+              width={1200}
+              height={850}
+              unoptimized
               className="h-auto max-w-full"
             />
 
